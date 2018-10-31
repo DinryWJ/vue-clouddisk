@@ -8,6 +8,7 @@
         below
       </p>
       <el-button>el-button</el-button>
+        <button class="button button-3d button-box button-jumbo"><i class="fa fa-thumbs-up"></i></button>
     </div>
     <HelloWorld msg="Welcome to Your Vue.js App"/><i class="fab fa-500px fa-2x"></i>
   </div>

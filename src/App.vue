@@ -9,7 +9,7 @@
       </p>
       <el-button>el-button</el-button>
     </div>
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <HelloWorld msg="Welcome to Your Vue.js App"/><i class="fab fa-500px fa-2x"></i>
   </div>
 </template>
 

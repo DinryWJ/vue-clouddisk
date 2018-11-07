@@ -6,7 +6,6 @@ import './plugins/element.js'
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import { addCookie, getCookie, delCookie } from './utils/cookie.js'
 
-import './utils/buttons.css'
 import './utils/normalize.css'
 import { changeTitle } from '@/utils'
 

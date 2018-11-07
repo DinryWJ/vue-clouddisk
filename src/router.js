@@ -90,7 +90,7 @@ const adminRoutes = [{
       title: "首页"
     },
     component: () =>
-      import('./views/main/home.vue')
+      import('./views/disk/home.vue')
   }]
 
 }]

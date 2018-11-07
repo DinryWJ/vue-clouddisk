@@ -9,19 +9,19 @@
             router
             :default-active="$route.path"
             class="el-menu-vertical-demo">
-            <el-menu-item index="/">
+            <el-menu-item index="/disk/home">
               <i class="far fa-copy fa-lg" style="margin-right: 10px;"></i>
               <span>全部文件</span>
             </el-menu-item>
-            <el-menu-item index="/myshare">
+            <el-menu-item index="/disk/myshare">
               <i class="fas fa-link fa-lg" style="margin-right: 6px;"></i>
               <span>我的分享</span>
             </el-menu-item>
-            <el-menu-item index="/recyclebin">
+            <el-menu-item index="/disk/recyclebin">
               <i class="far fa-trash-alt fa-lg" style="margin-right: 10px;"></i>
               <span>回收站</span>
             </el-menu-item>
-            <el-menu-item index="/about" id="buttom">
+            <el-menu-item index="/disk/about" id="buttom">
               <i class="fas fa-info" style="margin-right: 10px;"></i>
               <span>关于我们</span>
             </el-menu-item>

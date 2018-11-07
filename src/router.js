@@ -1,26 +1,88 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import layout from "./views/layout.vue";
+import index from "./views/index.vue";
+
+import main from "./views/main.vue";
 
 Vue.use(Router)
 
-const routerMap = [{
-  path: "/",
-  component: layout,
+const mainRoutes = [{
+  path: "/disk",
+  component: index,
   children: [{
-    path: '/',
-    name: "home",
+    path: '/disk',
     meta: {
       title: "首页"
     },
+    component: main,
+    children: [{
+      path: '/disk/home',
+      name: "home",
+      meta: {
+        title: "首页"
+      },
+      component: () =>
+        import('./views/disk/home.vue')
+    }, {
+      path: '/disk/myshare',
+      name: "myshare",
+      meta: {
+        title: "管理我的分享"
+      },
+      component: () =>
+        import('./views/disk/myshare.vue')
+    }, {
+      path: '/disk/recyclebin',
+      name: "recyclebin",
+      meta: {
+        title: "回收站"
+      },
+      component: () =>
+        import('./views/disk/recyclebin.vue')
+    }, {
+      path: '/disk/about',
+      name: "about",
+      meta: {
+        title: "关于"
+      },
+      component: () =>
+        import('./views/disk/about.vue')
+    }]
+  }, {
+    path: '/share',
+    name: "share",
+    meta: {
+      title: "分享"
+    },
     component: () =>
-      import('./views/base/home.vue')
+      import('./views/base/share.vue')
+  }, {
+    path: '/explore',
+    name: "explore",
+    meta: {
+      title: "探索"
+    },
+    component: () =>
+      import('./views/base/explore.vue')
+  }, {
+    path: '/more',
+    name: "more",
+    meta: {
+      title: "探索"
+    },
+    component: () =>
+      import('./views/base/more.vue')
+
+
+
+
+
   }]
 }]
 
-const sideRoutes = [{
+const adminRoutes = [{
   path: "/",
-  component: layout,
+  component: index,
   children: [{
     path: '/',
     name: "home2",
@@ -28,13 +90,16 @@ const sideRoutes = [{
       title: "首页"
     },
     component: () =>
-      import('./views/base/home.vue')
+      import('./views/main/home.vue')
   }]
 
 }]
-const routes = [...routerMap, ...sideRoutes]
+
+const routes = [...mainRoutes, ...adminRoutes]
 var router = new Router({
   routes
 })
 export default router;
-export { sideRoutes }
+export {
+  sideRoutes
+}

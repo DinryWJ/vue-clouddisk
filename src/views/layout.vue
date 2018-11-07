@@ -1,27 +1,9 @@
 <template>
   <div id="app">
-    <!-- 其他页 -->
-    <el-container >
-      <el-header class="navbar">
-        <!-- 导航栏 -->
-        <el-row>
-          <el-col :span="2" :offset="20"><div class="grid-content">
-            <el-dropdown @command="handleCommand">
-              <span class="el-dropdown-link">
-                管理员<i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="a">设置</el-dropdown-item>
-                <el-dropdown-item command="b">退出</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </div></el-col>
-        </el-row>
-      </el-header>
     <el-container>
       <el-aside width="200px" id="sidebar">
         <!-- 侧边栏 -->
-        <el-row class="tac"> 
+        <el-row> 
           <el-col>
           <el-menu 
             router
@@ -52,7 +34,6 @@
          <router-view></router-view>
       </el-main>
     </el-container>
-    </el-container>
    </div>
 </template>
  
@@ -73,7 +54,7 @@ export default {
     };
   },
   methods: {
-    handleCommand(command) {}
+
   },
   watch: {
     screenHeight(val) {

@@ -19,7 +19,7 @@
         </el-row>
       </el-header>
     <el-container>
-      <el-aside width="200px" class="sidebar">
+      <el-aside width="200px" id="sidebar">
         <!-- 侧边栏 -->
         <el-row class="tac"> 
           <el-col>
@@ -31,20 +31,19 @@
               <i class="far fa-copy fa-lg" style="margin-right: 10px;"></i>
               <span>全部文件</span>
             </el-menu-item>
-            <el-menu-item index="/">
+            <el-menu-item index="/myshare">
               <i class="fas fa-link fa-lg" style="margin-right: 6px;"></i>
               <span>我的分享</span>
             </el-menu-item>
-            <el-menu-item index="/">
+            <el-menu-item index="/recyclebin">
               <i class="far fa-trash-alt fa-lg" style="margin-right: 10px;"></i>
               <span>回收站</span>
             </el-menu-item>
-            <el-menu-item index="/" id="buttom">
-              <i class="far fa-trash-alt fa-lg" style="margin-right: 10px;"></i>
+            <el-menu-item index="/about" id="buttom">
+              <i class="fas fa-info" style="margin-right: 10px;"></i>
               <span>关于我们</span>
             </el-menu-item>
           </el-menu>
-          <div id="supplement"></div>
         </el-col>
         </el-row>
       </el-aside>
@@ -62,49 +61,40 @@ import axion from "@/utils/http_url.js"; //接口文件
 export default {
   data() {
     return {
+      screenHeight: document.documentElement.clientHeight - 60 //减去header的60px
     };
   },
   mounted() {
-    this.init();
+    document.getElementById("sidebar").style.height = this.screenHeight + "px"; //页面初始化
+    window.onresize = () => {
+      return (() => {
+        this.screenHeight = document.body.clientHeight;
+      })();
+    };
   },
   methods: {
-    init(){
-      // axion.getUserByToken({
-      //   token:this.$cookieStore.getCookie("token")
-      // }).then(d => {
-      //     if (d.data.code != 200) {
-      //       this.$alert(d.data.type, "提示", {});
-      //       return;
-      //     }
-      //     if(d.data.data.userPermission != "1"){
-      //       this.$alert("非管理员！", "提示", {});
-      //       this.$router.push('/');
-      //     }
-      //   });
-    },
-    handleCommand(command) {
-      // if(command == 'b'){
-      //   this.$router.push('/');
-      // }
+    handleCommand(command) {}
+  },
+  watch: {
+    screenHeight(val) {
+      this.screenHeight = val;
+      document.getElementById("sidebar").style.height =
+        this.screenHeight - 60 + "px"; //检测窗口的大小，并赋值
     }
   }
 };
 </script>
  
 <style scoped>
-#buttom{
-  left: 0;
-	position: fixed;
-	bottom: 0;
-	width: 100%;
-	z-index: 100;
-
+#buttom {
+  position: fixed;
+  bottom: 0;
+  width: 200px;
+  z-index: 100;
 }
-#supplement{
-  background-color: #eff4f8;
-  height: 500px;
-}
-.navbar,.sidebar {
+.navbar,
+#sidebar,
+.el-menu-item {
   background-color: #eff4f8;
 }
 .el-col {

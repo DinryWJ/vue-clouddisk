@@ -47,9 +47,10 @@ export default {
   },
   mounted() {
     document.getElementById("sidebar").style.height = this.screenHeight + "px"; //页面初始化
+    document.getElementById("app").style.height = this.screenHeight + "px";
     window.onresize = () => {
       return (() => {
-        this.screenHeight = document.body.clientHeight;
+        this.screenHeight = document.documentElement.clientHeight;
       })();
     };
   },
@@ -67,6 +68,9 @@ export default {
 </script>
  
 <style scoped>
+#app{
+  overflow: hidden;
+}
 #buttom {
   position: fixed;
   bottom: 0;
@@ -77,6 +81,9 @@ export default {
 #sidebar,
 .el-menu-item {
   background-color: #eff4f8;
+}
+.el-menu-item:hover {
+  background-color: #e3e8eb;
 }
 .el-col {
   border-radius: 4px;

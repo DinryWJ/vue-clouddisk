@@ -8,7 +8,10 @@ import { addCookie, getCookie, delCookie } from './utils/cookie.js'
 import './utils/buttons.css'
 import './utils/normalize.css'
 import { changeTitle } from '@/utils'
+import contentmenu from 'v-contextmenu'
+import 'v-contextmenu/dist/index.css'
 
+Vue.use(contentmenu)
 Vue.config.productionTip = false
 
 new Vue({

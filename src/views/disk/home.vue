@@ -1,5 +1,26 @@
 <template>
   <div>
+    <v-contextmenu ref="contextmenu" :theme="theme">
+      <v-contextmenu-item @click="handleClick">打开</v-contextmenu-item>
+      <v-contextmenu-item @click="handleClick">下载</v-contextmenu-item>
+
+      <v-contextmenu-item divider></v-contextmenu-item>
+
+      <v-contextmenu-item @click="handleClick">分享</v-contextmenu-item>
+      <v-contextmenu-item @click="handleClick">设置共享</v-contextmenu-item>
+
+      <v-contextmenu-item divider></v-contextmenu-item>
+
+      <v-contextmenu-item @click="handleClick">移动到...</v-contextmenu-item>
+      <v-contextmenu-item @click="handleClick">复制到...</v-contextmenu-item>
+
+      <v-contextmenu-item divider></v-contextmenu-item>
+
+      <v-contextmenu-item @click="handleClick">重命名</v-contextmenu-item>
+      <v-contextmenu-item @click="handleClick">删除</v-contextmenu-item>
+    </v-contextmenu>
+
+
     <div class="nav">
       <button id="uploadBtn" class="button button-primary button-raised button-glow button-longshadow-right">
         <i class="fas fa-upload"></i>上传
@@ -22,6 +43,7 @@
       </el-breadcrumb>
 
       <el-table
+      v-contextmenu:contextmenu
         :height="tableHeight"
         :data="tableData"
         ref="multipleTable"
@@ -32,35 +54,25 @@
           width="55">
         </el-table-column>
         <el-table-column
-          label="日期"
-          width="180">
+          label="文件"
+          width="500">
           <template slot-scope="scope">
-            <i class="el-icon-time"></i>
-            <span style="margin-left: 10px">{{ scope.row.date }}</span>
+            <i class="fas fa-folder fa-2x"></i>
+            <span style="margin-left:20px;">{{ scope.row.name }}</span>
           </template>
         </el-table-column>
         <el-table-column
-          label="姓名"
+          label="大小"
           width="180">
           <template slot-scope="scope">
-            <el-popover trigger="hover" placement="top">
-              <p>姓名: {{ scope.row.name }}</p>
-              <p>住址: {{ scope.row.address }}</p>
-              <div slot="reference" class="name-wrapper">
-                <el-tag size="medium">{{ scope.row.name }}</el-tag>
-              </div>
-            </el-popover>
+            <span>{{ scope.row.size }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          label="修改时间"
+          width="180">
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button
-              size="mini"
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <span>{{ scope.row.date }}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -78,86 +90,119 @@ export default {
         {
           id: 1,
           date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
+          name: "文件夹3",
+          size: "-"
         },
         {
           id: 2,
           date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
+          name: "文件夹2",
+          size: "-"
         },
         {
           id: 3,
           date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
+          name: "文件夹1",
+          size: "-"
         },
         {
           id: 4,
           date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
+          name: "图片.jpg",
+          size: "100KB"
         },
         {
           id: 5,
           date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
+          name: "压缩包.zip",
+          size: "100.16M"
         },
         {
           id: 6,
           date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
+          name: "深入理解java.pdf",
+          size: "100.16M"
         },
         {
           id: 7,
           date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
+          name: "音乐.mp3",
+          size: "100.16M"
         },
         {
           id: 8,
           date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
+          name: "大学物理.ppt",
+          size: "100.16M"
         },
         {
           id: 9,
           date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
+          name: "catalina.out",
+          size: "100.16M"
         },
         {
           id: 10,
           date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
+          name: "图片.jpg",
+          size: "100.16M"
         },
         {
           id: 11,
           date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
+          name: "未知格式.12",
+          size: "100.16M"
         },
         {
           id: 12,
           date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
+          name: "视频.mp4",
+          size: "100.16M"
         },
         {
           id: 13,
           date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
+          name: "电影.avi",
+          size: "100.16M"
+        },
+        {
+          id: 14,
+          date: "2016-05-03",
+          name: "电影.avi",
+          size: "100.16M"
+        },
+        {
+          id: 15,
+          date: "2016-05-04",
+          name: "可执行文件.exe",
+          size: "100.16M"
+        },
+        {
+          id: 16,
+          date: "2016-05-01",
+          name: "压缩包.zip",
+          size: "100.16M"
+        },
+        {
+          id: 17,
+          date: "2016-05-03",
+          name: "压缩包.rar",
+          size: "100.16M"
+        },
+        {
+          id: 18,
+          date: "2016-05-04",
+          name: "可执行文件.exe",
+          size: "100.16M"
         }
       ],
       multipleSelection: []
     };
   },
   mounted() {},
+  props: {
+    theme: String
+  },
   methods: {
     handleCommand(command) {},
     handleEdit(index, row) {
@@ -167,15 +212,18 @@ export default {
       console.log(index, row);
     },
     toggleSelection(row) {
+      this.$refs.multipleTable.clearSelection();
       if (row) {
-        this.$refs.multipleTable.clearSelection();
         this.$refs.multipleTable.toggleRowSelection(row);
       }
     },
     clickTr(row, event) {
-      // console.log(row["id"]); //跟下面效果一样
+      console.log(row["id"]); //跟下面效果一样
       this.toggleSelection(row);
-       console.log(row, event); //获取各行id的值
+      // console.log(row, event); //获取各行id的值
+    },
+    handleClick(vm, event) {
+      console.log(vm, event);
     }
   }
 };

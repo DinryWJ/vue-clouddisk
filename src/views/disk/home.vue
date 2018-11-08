@@ -43,7 +43,7 @@
       </el-breadcrumb>
 
       <el-table
-      v-contextmenu:contextmenu
+        v-contextmenu:contextmenu
         :height="tableHeight"
         :data="tableData"
         ref="multipleTable"
@@ -55,7 +55,7 @@
         </el-table-column>
         <el-table-column
           label="文件"
-          width="500">
+          min-width="500">
           <template slot-scope="scope">
             <i class="fas fa-folder fa-2x"></i>
             <span style="margin-left:20px;">{{ scope.row.name }}</span>

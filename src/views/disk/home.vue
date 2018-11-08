@@ -24,7 +24,13 @@
       <el-table
         :height="tableHeight"
         :data="tableData"
-        style="width: 100%">
+        ref="multipleTable"
+        style="width: 100%"
+        @row-contextmenu="clickTr">
+        <el-table-column
+          type="selection"
+          width="55">
+        </el-table-column>
         <el-table-column
           label="日期"
           width="180">
@@ -66,80 +72,92 @@ import axion from "@/utils/http_url.js"; //接口文件
 export default {
   data() {
     return {
-      tableHeight:window.innerHeight - 180,
+      tableHeight: window.innerHeight - 180,
       input: "",
       tableData: [
         {
+          id: 1,
           date: "2016-05-02",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1518 弄"
         },
         {
+          id: 2,
           date: "2016-05-04",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1517 弄"
         },
         {
+          id: 3,
           date: "2016-05-01",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1519 弄"
         },
         {
+          id: 4,
           date: "2016-05-03",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1516 弄"
         },
         {
+          id: 5,
           date: "2016-05-04",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1517 弄"
         },
         {
+          id: 6,
           date: "2016-05-01",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1519 弄"
         },
         {
+          id: 7,
           date: "2016-05-03",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1516 弄"
         },
         {
+          id: 8,
           date: "2016-05-04",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1517 弄"
         },
         {
+          id: 9,
           date: "2016-05-01",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1519 弄"
         },
         {
+          id: 10,
           date: "2016-05-03",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1516 弄"
         },
         {
+          id: 11,
           date: "2016-05-04",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1517 弄"
         },
         {
+          id: 12,
           date: "2016-05-01",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1519 弄"
         },
         {
+          id: 13,
           date: "2016-05-03",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1516 弄"
         }
-      ]
+      ],
+      multipleSelection: []
     };
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
     handleCommand(command) {},
     handleEdit(index, row) {
@@ -147,6 +165,17 @@ export default {
     },
     handleDelete(index, row) {
       console.log(index, row);
+    },
+    toggleSelection(row) {
+      if (row) {
+        this.$refs.multipleTable.clearSelection();
+        this.$refs.multipleTable.toggleRowSelection(row);
+      }
+    },
+    clickTr(row, event) {
+      // console.log(row["id"]); //跟下面效果一样
+      this.toggleSelection(row);
+       console.log(row, event); //获取各行id的值
     }
   }
 };

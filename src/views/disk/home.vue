@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-contextmenu ref="contextmenu" :theme="theme">
-      <v-contextmenu-item @click="handleClick">打开</v-contextmenu-item>
+    <v-contextmenu ref="contextmenu" :theme="theme" @show="show" @hide="hide">
+      <v-contextmenu-item @click="handleClick" :disabled="multiDisabled">打开</v-contextmenu-item>
       <v-contextmenu-item @click="handleClick">下载</v-contextmenu-item>
 
       <v-contextmenu-item divider></v-contextmenu-item>
@@ -16,7 +16,7 @@
 
       <v-contextmenu-item divider></v-contextmenu-item>
 
-      <v-contextmenu-item @click="handleClick">重命名</v-contextmenu-item>
+      <v-contextmenu-item @click="handleClick" :disabled="multiDisabled">重命名</v-contextmenu-item>
       <v-contextmenu-item @click="handleClick">删除</v-contextmenu-item>
     </v-contextmenu>
 
@@ -48,6 +48,7 @@
         :data="tableData"
         ref="multipleTable"
         style="width: 100%"
+        @selection-change="handleSelectionChange"
         @row-contextmenu="clickTd"
         @header-contextmenu="clickTh">
         <el-table-column
@@ -85,8 +86,10 @@ import axion from "@/utils/http_url.js"; //接口文件
 export default {
   data() {
     return {
+      menuShow: false,
       tableHeight: window.innerHeight - 180,
       input: "",
+      multiDisabled: true,
       tableData: [
         {
           id: 1,
@@ -213,9 +216,23 @@ export default {
       console.log(index, row);
     },
     toggleSelection(row) {
-      this.$refs.multipleTable.clearSelection();
+      let flag = false;
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        if (this.multipleSelection[i].id == row["id"]) {
+          flag = true;
+          break;
+        }
+      }
+      this.multiDisabled = false;
+      if (!flag) {
+        this.$refs.multipleTable.clearSelection();
+      } else {
+        if (this.multipleSelection.length > 1) {
+          this.multiDisabled = true;
+        }
+      }
       if (row) {
-        this.$refs.multipleTable.toggleRowSelection(row);
+        this.$refs.multipleTable.toggleRowSelection(row, true);
       }
     },
     clickTd(row, event) {
@@ -224,10 +241,25 @@ export default {
       // console.log(row, event); //获取各行id的值
     },
     clickTh(row, event) {
-      window.event? window.event.cancelBubble = true : e.stopPropagation();//阻止表头触发右键菜单栏
+      window.event ? (window.event.cancelBubble = true) : e.stopPropagation(); //阻止表头触发右键菜单栏
     },
     handleClick(vm, event) {
       console.log(vm, event);
+    },
+    handleSelectionChange(val) {
+      if(this.menuShow){
+        this.$refs.contextmenu.hide();
+        this.menuShow = false;
+      }
+      this.multipleSelection = val;
+    },
+    show() {
+      console.log("menu show");
+      this.menuShow = true;
+    },
+    hide() {
+      console.log("menu hide");
+      this.menuShow = false;
     }
   }
 };

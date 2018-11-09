@@ -10,10 +10,18 @@ const mainRoutes = [{
   path: '/',
   name: "login",
   meta: {
-    title: "登陆"
+    title: "登录"
   },
   component: () =>
     import('./views/login/login.vue')
+}, {
+  path: '/register',
+  name: "register",
+  meta: {
+    title: "注册"
+  },
+  component: () =>
+    import('./views/login/register.vue')
 }, {
   path: "/disk",
   component: index,
@@ -76,7 +84,7 @@ const mainRoutes = [{
     path: '/more',
     name: "more",
     meta: {
-      title: "探索"
+      title: "更多"
     },
     component: () =>
       import('./views/base/more.vue')

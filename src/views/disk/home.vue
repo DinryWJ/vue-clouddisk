@@ -48,7 +48,8 @@
         :data="tableData"
         ref="multipleTable"
         style="width: 100%"
-        @row-contextmenu="clickTr">
+        @row-contextmenu="clickTd"
+        @header-contextmenu="clickTh">
         <el-table-column
           type="selection"
           width="55">
@@ -217,10 +218,13 @@ export default {
         this.$refs.multipleTable.toggleRowSelection(row);
       }
     },
-    clickTr(row, event) {
+    clickTd(row, event) {
       console.log(row["id"]); //跟下面效果一样
       this.toggleSelection(row);
       // console.log(row, event); //获取各行id的值
+    },
+    clickTh(row, event) {
+      window.event? window.event.cancelBubble = true : e.stopPropagation();//阻止表头触发右键菜单栏
     },
     handleClick(vm, event) {
       console.log(vm, event);

@@ -7,6 +7,14 @@ import main from "./views/main.vue";
 Vue.use(Router)
 
 const mainRoutes = [{
+  path: '/',
+  name: "login",
+  meta: {
+    title: "登陆"
+  },
+  component: () =>
+    import('./views/login/login.vue')
+}, {
   path: "/disk",
   component: index,
   children: [{

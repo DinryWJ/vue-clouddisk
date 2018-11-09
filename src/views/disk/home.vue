@@ -249,7 +249,6 @@ export default {
     handleSelectionChange(val) {
       if(this.menuShow){
         this.$refs.contextmenu.hide();
-        // this.menuShow = false;
       }
       this.multipleSelection = val;
     },

@@ -64,7 +64,7 @@ export default {
   background-color: #fff;
   width: 312px;
   height: 405px;
-  margin-top: 110px;
+  margin-top: 30%;
   padding: 0px 20px;
 }
 .slogan{

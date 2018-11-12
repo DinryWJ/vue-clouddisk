@@ -17,7 +17,7 @@
       return {
         options: {
           // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
-          target: '//localhost:12315/upload',
+          target: 'http://localhost:12315/upload',
           testChunks: false
         },
         attrs: {

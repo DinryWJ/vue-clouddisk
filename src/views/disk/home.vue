@@ -79,6 +79,13 @@
         </el-table-column>
       </el-table>
     </div>
+    <div class="uploadField">
+      <el-card class="box-card">
+        <div v-for="o in 4" :key="o" class="text item">
+          {{'列表内容 ' + o }}
+        </div>
+      </el-card>
+    </div>
   </div>
 </template>
 <script>
@@ -279,6 +286,13 @@ export default {
 }
 .body {
   margin-top: 20px;
+}
+.uploadField{
+  background-color: blueviolet;
+  width: 614px;
+  position: absolute;
+  right: 50px;
+  bottom: 0px;
 }
 </style>
 

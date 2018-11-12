@@ -12,7 +12,8 @@
     "element-ui": "^2.4.9",
     "v-contextmenu": "^2.8.0",
     "vue": "^2.5.17",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vue-simple-uploader": "^0.5.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.1.0",

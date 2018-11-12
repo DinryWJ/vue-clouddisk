@@ -10,8 +10,10 @@ import './utils/normalize.css'
 import { changeTitle } from '@/utils'
 import contentmenu from 'v-contextmenu'
 import 'v-contextmenu/dist/index.css'
+import uploader from 'vue-simple-uploader'
 
 Vue.use(contentmenu)
+Vue.use(uploader)
 Vue.config.productionTip = false
 
 new Vue({

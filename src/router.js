@@ -23,6 +23,14 @@ const mainRoutes = [{
   component: () =>
     import('./views/login/register.vue')
 }, {
+  path: '/upload',
+  name: "upload",
+  meta: {
+    title: "上传"
+  },
+  component: () =>
+    import('./views/disk/uploader.vue')
+}, {
   path: "/disk",
   component: index,
   children: [{

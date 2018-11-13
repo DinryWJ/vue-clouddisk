@@ -18,7 +18,7 @@
         options: {
           // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
           target: 'http://localhost:12315/upload',
-          testChunks: false
+          testChunks: true
         },
         attrs: {
           accept: 'image/*'

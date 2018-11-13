@@ -22,7 +22,7 @@
 
 
     <div class="nav">
-      <button id="uploadBtn" class="button button-primary button-raised button-glow button-longshadow-right">
+      <button id="uploadBtn" class="button button-primary button-raised button-glow button-longshadow-right" v-on:click="uploadshow=true">
         <i class="fas fa-upload"></i>上传
       </button>
       <button class="button button-rounded"><i class="fas fa-folder-plus"></i>新建文件夹</button>
@@ -79,13 +79,29 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="uploadField">
-      <el-card class="box-card">
-        <div v-for="o in 4" :key="o" class="text item">
-          {{'列表内容 ' + o }}
+    <transition name="fade">
+    <div class="uploadField" v-if="uploadshow">
+      <el-card class="box-card" body-style="padding: 0">
+        <div slot="header" class="clearfix">
+          <span>上传</span>
+          <el-button style="float: right; padding: 5px 0" type="text" @click="closeUpload"><i class="fas fa-times"></i></el-button>
+          <el-button style="float: right; padding: 5px 0;margin-right:5px;" type="text"  @click="minimize"><i class="far fa-window-minimize" v-if="mini"></i><i v-else class="far fa-window-maximize"></i></el-button>
+        </div>
+        <div>
+          <uploader :options="options" class="uploader-example" ref="uploader">
+            <uploader-unsupport></uploader-unsupport>
+            <uploader-drop>
+              <div style="padding:5px 0">拖动上传到此处...</div>
+              <uploader-btn>选择文件</uploader-btn>
+              <uploader-btn :attrs="attrs">选择图片</uploader-btn>
+              <uploader-btn :directory="true">选择文件夹</uploader-btn>
+            </uploader-drop>
+            <uploader-list></uploader-list>
+          </uploader>
         </div>
       </el-card>
     </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -93,10 +109,19 @@ import axion from "@/utils/http_url.js"; //接口文件
 export default {
   data() {
     return {
+      mini: true,
+      uploadshow: false,
       menuShow: false,
       tableHeight: window.innerHeight - 180,
       input: "",
       multiDisabled: true,
+      options: {
+        target: "http://localhost:12315/upload",
+        testChunks: true
+      },
+      attrs: {
+        accept: "image/*"
+      },
       tableData: [
         {
           id: 1,
@@ -210,7 +235,9 @@ export default {
       multipleSelection: []
     };
   },
-  mounted() {},
+  mounted() {
+    document.getElementsByTagName("body")[0].style.overflow = "hidden";
+  },
   props: {
     theme: String
   },
@@ -254,7 +281,7 @@ export default {
       console.log(vm, event);
     },
     handleSelectionChange(val) {
-      if(this.menuShow){
+      if (this.menuShow) {
         this.$refs.contextmenu.hide();
       }
       this.multipleSelection = val;
@@ -266,6 +293,30 @@ export default {
     hide() {
       console.log("menu hide");
       this.menuShow = false;
+    },
+    minimize() {
+      this.mini = !this.mini;
+      if (this.mini) {
+        document.getElementsByClassName("uploadField")[0].style.bottom = "0px";
+      } else {
+        document.getElementsByClassName("uploadField")[0].style.bottom =
+          "-445px";
+      }
+    },
+    closeUpload(){
+      const uploaderInstance = this.$refs.uploader.uploader;
+      if(!uploaderInstance.isComplete()){
+        this.$confirm('上传未完成，是否取消上传?', '提示', {
+          confirmButtonText: '是',
+          cancelButtonText: '否',
+          type: 'warning'
+        }).then(() => {
+          uploaderInstance.cancel();
+          this.uploadshow = false;
+        }).catch(() => {});
+      }else{
+        this.uploadshow = false;
+      }
     }
   }
 };
@@ -287,12 +338,41 @@ export default {
 .body {
   margin-top: 20px;
 }
-.uploadField{
+.uploadField {
   background-color: blueviolet;
   width: 614px;
+  height: 500px;
   position: absolute;
   right: 50px;
   bottom: 0px;
+  z-index: 20;
+}
+.uploader-example {
+  font-size: 12px;
+  min-height: 445px;
+}
+.uploader-example .uploader-btn {
+  margin-right: 4px;
+}
+.uploader-example .uploader-list {
+  max-height: 440px;
+  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+/* 开始过渡阶段,动画出去阶段 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease-out;
+}
+/* 进入开始 */
+.fade-enter {
+  transform: translateY(500px);
+  opacity: 0;
+}
+/* 出去终点 */
+.fade-leave-active {
+  transform: translateY(500px);
+  opacity: 0;
 }
 </style>
-

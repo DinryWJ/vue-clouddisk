@@ -84,7 +84,7 @@
       <el-card class="box-card" body-style="padding: 0">
         <div slot="header" class="clearfix">
           <span>上传</span>
-          <el-button style="float: right; padding: 5px 0" type="text" @click="closeUpload"><i class="fas fa-times"></i></el-button>
+          <el-button style="float: right; padding: 5px 0" type="text" @click="uploadshow = false;"><i class="fas fa-times"></i></el-button>
           <el-button style="float: right; padding: 5px 0;margin-right:5px;" type="text"  @click="minimize"><i class="far fa-window-minimize" v-if="mini"></i><i v-else class="far fa-window-maximize"></i></el-button>
         </div>
         <div>
@@ -245,14 +245,14 @@ export default {
   methods: {
     init(){
       document.getElementsByTagName("body")[0].style.overflow = "hidden";
-      let _this = this;
+      // let _this = this;
       let uploaderInstance = this.$refs.uploader.uploader;
-      uploaderInstance.on('complete', function () {
-        console.log(uploaderInstance.fileList);
-        _this.$message({
-          message: '所有文件上传成功！',
-          type: 'success'
-        });
+      uploaderInstance.on('fileSuccess', function (rootFile, file, message, chunk) {
+        console.log(rootFile, file, message, chunk);
+        // _this.$message({
+        //   message: '文件上传成功！',
+        //   type: 'success'
+        // });
       })
     },
     handleCommand(command) {},
@@ -315,21 +315,6 @@ export default {
         document.getElementsByClassName("uploadField")[0].style.bottom =
           "-445px";
       }
-    },
-    closeUpload(){
-      // let uploaderInstance = this.$refs.uploader.uploader;
-      // if(!uploaderInstance.isComplete()){
-      //   this.$confirm('上传未完成，是否取消上传?', '提示', {
-      //     confirmButtonText: '是',
-      //     cancelButtonText: '否',
-      //     type: 'warning'
-      //   }).then(() => {
-      //     uploaderInstance.cancel();
-      //     this.uploadshow = false;
-      //   }).catch(() => {});
-      // }else{
-        this.uploadshow = false;
-      // }
     }
   }
 };

@@ -80,7 +80,7 @@
       </el-table>
     </div>
     <transition name="fade">
-    <div class="uploadField" v-if="uploadshow">
+    <div class="uploadField" v-show="uploadshow">
       <el-card class="box-card" body-style="padding: 0">
         <div slot="header" class="clearfix">
           <span>上传</span>
@@ -236,12 +236,25 @@ export default {
     };
   },
   mounted() {
-    document.getElementsByTagName("body")[0].style.overflow = "hidden";
+   
+    this.init();
   },
   props: {
     theme: String
   },
   methods: {
+    init(){
+      document.getElementsByTagName("body")[0].style.overflow = "hidden";
+      let _this = this;
+      let uploaderInstance = this.$refs.uploader.uploader;
+      uploaderInstance.on('complete', function () {
+        console.log(uploaderInstance.fileList);
+        _this.$message({
+          message: '所有文件上传成功！',
+          type: 'success'
+        });
+      })
+    },
     handleCommand(command) {},
     handleEdit(index, row) {
       console.log(index, row);
@@ -304,19 +317,19 @@ export default {
       }
     },
     closeUpload(){
-      const uploaderInstance = this.$refs.uploader.uploader;
-      if(!uploaderInstance.isComplete()){
-        this.$confirm('上传未完成，是否取消上传?', '提示', {
-          confirmButtonText: '是',
-          cancelButtonText: '否',
-          type: 'warning'
-        }).then(() => {
-          uploaderInstance.cancel();
-          this.uploadshow = false;
-        }).catch(() => {});
-      }else{
+      // let uploaderInstance = this.$refs.uploader.uploader;
+      // if(!uploaderInstance.isComplete()){
+      //   this.$confirm('上传未完成，是否取消上传?', '提示', {
+      //     confirmButtonText: '是',
+      //     cancelButtonText: '否',
+      //     type: 'warning'
+      //   }).then(() => {
+      //     uploaderInstance.cancel();
+      //     this.uploadshow = false;
+      //   }).catch(() => {});
+      // }else{
         this.uploadshow = false;
-      }
+      // }
     }
   }
 };
@@ -350,12 +363,13 @@ export default {
 .uploader-example {
   font-size: 12px;
   min-height: 445px;
+  max-height: 445px;
 }
 .uploader-example .uploader-btn {
   margin-right: 4px;
 }
 .uploader-example .uploader-list {
-  max-height: 440px;
+  max-height: 374px;
   overflow: auto;
   overflow-x: hidden;
   overflow-y: auto;

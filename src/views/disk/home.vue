@@ -250,10 +250,9 @@ export default {
       let uploaderInstance = this.$refs.uploader.uploader;
       uploaderInstance.on('fileSuccess', function (rootFile, file, message, chunk) {
         console.log(rootFile, file, message, chunk);
-        // _this.$message({
-        //   message: '文件上传成功！',
-        //   type: 'success'
-        // });
+      })
+      uploaderInstance.on('fileAdded',function(file, event){
+        return true;
       })
     },
     handleCommand(command) {},

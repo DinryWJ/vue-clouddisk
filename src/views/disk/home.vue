@@ -117,7 +117,8 @@ export default {
       multiDisabled: true,
       options: {
         target: "http://localhost:12315/upload",
-        testChunks: true
+        testChunks: true,
+        chunkSize: 5*1024*1024
       },
       attrs: {
         accept: "image/*"

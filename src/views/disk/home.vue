@@ -277,7 +277,7 @@ export default {
       } else {
         chunk.preprocessFinished();
       }
-      console.log(chunk.file.md5);
+      // console.log(chunk.file.md5);
     },
     handleCommand(command) {},
     handleEdit(index, row) {

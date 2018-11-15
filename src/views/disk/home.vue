@@ -106,6 +106,7 @@
 </template>
 <script>
 import axion from "@/utils/http_url.js"; //接口文件
+import {fileMd5HeadTailTime} from '../../utils/md5.js'
 export default {
   data() {
     return {
@@ -118,7 +119,12 @@ export default {
       options: {
         target: "http://localhost:12315/upload",
         testChunks: true,
-        chunkSize: 64*1024*1024
+        chunkSize: 64 * 1024 * 1024,
+        preprocess: this.preprocess,
+        simultaneousUploads: 1,
+        query: function(file) {
+          return { md5: file.md5 };
+        }
       },
       attrs: {
         accept: "image/*"
@@ -237,23 +243,41 @@ export default {
     };
   },
   mounted() {
-   
     this.init();
   },
   props: {
     theme: String
   },
   methods: {
-    init(){
+    init() {
       document.getElementsByTagName("body")[0].style.overflow = "hidden";
       // let _this = this;
-      let uploaderInstance = this.$refs.uploader.uploader;
-      uploaderInstance.on('fileSuccess', function (rootFile, file, message, chunk) {
-        console.log(rootFile, file, message, chunk);
-      })
+      // let uploaderInstance = this.$refs.uploader.uploader;
+      // uploaderInstance.on("fileSuccess", function(
+      //   rootFile,
+      //   file,
+      //   message,
+      //   chunk
+      // ) {
+      //   console.log(rootFile, file, message, chunk);
+      // });
       // uploaderInstance.on('fileAdded',function(file, event){
       //   return true;
       // })
+    },
+    preprocess(chunk) {
+      let uploaderInstance = this.$refs.uploader.uploader;
+      // 上传或test之前执行,生成md5(如果file存在md5 就不生成了)
+      if (chunk.file.md5 === "" || chunk.file.md5 == null) {
+        fileMd5HeadTailTime(chunk.file, uploaderInstance.opts.chunkSize).then(
+          () => {
+            chunk.preprocessFinished();
+          }
+        );
+      } else {
+        chunk.preprocessFinished();
+      }
+      console.log(chunk.file.md5);
     },
     handleCommand(command) {},
     handleEdit(index, row) {

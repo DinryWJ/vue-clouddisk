@@ -251,9 +251,9 @@ export default {
       uploaderInstance.on('fileSuccess', function (rootFile, file, message, chunk) {
         console.log(rootFile, file, message, chunk);
       })
-      uploaderInstance.on('fileAdded',function(file, event){
-        return true;
-      })
+      // uploaderInstance.on('fileAdded',function(file, event){
+      //   return true;
+      // })
     },
     handleCommand(command) {},
     handleEdit(index, row) {

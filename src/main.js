@@ -11,6 +11,7 @@ import { changeTitle } from '@/utils'
 import contentmenu from 'v-contextmenu'
 import 'v-contextmenu/dist/index.css'
 import uploader from 'vue-simple-uploader'
+import store from './store'
 
 Vue.use(contentmenu)
 Vue.use(uploader)
@@ -18,6 +19,7 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')
 

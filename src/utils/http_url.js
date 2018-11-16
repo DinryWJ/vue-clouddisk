@@ -42,7 +42,7 @@ const post = (_url, obj) => axios.post(_url, obj, objBase).then(codeerror).catch
 const post2 = (_url, body) => axios.post(_url, body, modelBase).then(codeerror).catch(errorFn)
 
 /*登陆*/
-const login = (name, pass) => post('/login/login', name, pass)
+const login = (username, password) => post('/login/login', username, password)
 /*注册*/
 const register = (parameters) => post('/login/register', parameters)
 export default {

@@ -50,7 +50,20 @@ export default {
   },
   methods: {
     login(){
-      this.$router.push("/disk/home");
+      axion
+        .login({
+          username: this.name,
+          password: this.pass
+        })
+        .then(d => {
+          if (d.data.returnCode != 200) {
+            this.$alert(d.data.type, "提示", {});
+            return;
+          }
+          
+          this.$alert(d.data.returnData);
+        });
+      // this.$router.push("/disk/home");
     },
     goRegister(){
       this.$router.push("/register");

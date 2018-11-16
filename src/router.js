@@ -10,7 +10,8 @@ const mainRoutes = [{
   path: '/',
   name: "login",
   meta: {
-    title: "登录"
+    title: "登录",
+    requireAuth: false
   },
   component: () =>
     import('./views/login/login.vue')
@@ -18,7 +19,8 @@ const mainRoutes = [{
   path: '/register',
   name: "register",
   meta: {
-    title: "注册"
+    title: "注册",
+    requireAuth: false
   },
   component: () =>
     import('./views/login/register.vue')
@@ -26,7 +28,8 @@ const mainRoutes = [{
   path: '/upload',
   name: "upload",
   meta: {
-    title: "上传"
+    title: "上传",
+    requireAuth: true
   },
   component: () =>
     import('./views/disk/uploader.vue')
@@ -43,7 +46,8 @@ const mainRoutes = [{
       path: '/disk/home',
       name: "home",
       meta: {
-        title: "首页"
+        title: "首页",
+        requireAuth: true
       },
       component: () =>
         import('./views/disk/home.vue')
@@ -51,7 +55,8 @@ const mainRoutes = [{
       path: '/disk/myshare',
       name: "myshare",
       meta: {
-        title: "管理我的分享"
+        title: "管理我的分享",
+        requireAuth: true
       },
       component: () =>
         import('./views/disk/myshare.vue')
@@ -59,7 +64,8 @@ const mainRoutes = [{
       path: '/disk/recyclebin',
       name: "recyclebin",
       meta: {
-        title: "回收站"
+        title: "回收站",
+        requireAuth: true
       },
       component: () =>
         import('./views/disk/recyclebin.vue')
@@ -67,7 +73,8 @@ const mainRoutes = [{
       path: '/disk/about',
       name: "about",
       meta: {
-        title: "关于"
+        title: "关于",
+        requireAuth: true
       },
       component: () =>
         import('./views/disk/about.vue')
@@ -76,7 +83,8 @@ const mainRoutes = [{
     path: '/share',
     name: "share",
     meta: {
-      title: "分享"
+      title: "分享",
+      requireAuth: true
     },
     component: () =>
       import('./views/base/share.vue')
@@ -84,7 +92,8 @@ const mainRoutes = [{
     path: '/explore',
     name: "explore",
     meta: {
-      title: "探索"
+      title: "探索",
+      requireAuth: true
     },
     component: () =>
       import('./views/base/explore.vue')
@@ -92,7 +101,8 @@ const mainRoutes = [{
     path: '/more',
     name: "more",
     meta: {
-      title: "更多"
+      title: "更多",
+      requireAuth: true
     },
     component: () =>
       import('./views/base/more.vue')
@@ -111,7 +121,7 @@ const adminRoutes = [{
     path: '/',
     name: "home2",
     meta: {
-      title: "首页"
+      title: "首页",
     },
     component: () =>
       import('./views/disk/home.vue')

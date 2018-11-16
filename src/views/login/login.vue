@@ -60,10 +60,13 @@ export default {
             this.$alert(d.data.type, "提示", {});
             return;
           }
-          
-          this.$alert(d.data.returnData);
+          this.$store.commit('ADD_TOKEN',d.data.returnData);
+          if (this.$route.query.redirect != null) {
+            this.$router.push(this.$route.query.redirect);   
+          }else{
+            this.$router.push("/disk/home");
+          }
         });
-      // this.$router.push("/disk/home");
     },
     goRegister(){
       this.$router.push("/register");

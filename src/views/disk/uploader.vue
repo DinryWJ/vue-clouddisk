@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import {fileMd5HeadTailTime} from '../../utils/md5.js'
+import { fileMd5HeadTailTime } from "../../utils/md5.js";
 export default {
   data() {
     return {
@@ -22,9 +22,9 @@ export default {
         testChunks: true,
         chunkSize: 64 * 1024 * 1024,
         preprocess: this.preprocess,
-        simultaneousUploads :1,
-        query :function(file) {
-          return {'md5': file.md5}
+        simultaneousUploads: 1,
+        query: function(file) {
+          return { md5: file.md5 };
         }
       },
       attrs: {
@@ -67,5 +67,32 @@ export default {
   overflow: auto;
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+</style>
+
+<style>
+.uploader-file-icon::before {
+  content: url(../../assets/small-file.png) !important;
+  display: block;
+  height: 100%;
+  font-size: 24px;
+  line-height: 1;
+  text-indent: 0;
+}
+.uploader-file-icon[icon=folder]::before {
+  content: url(../../assets/small-folder.png) !important;
+}
+.uploader-file-icon[icon=image]::before {
+  content: url(../../assets/small-image.png) !important;
+}
+.uploader-file-icon[icon=video]::before {
+  content: url(../../assets/small-video.png) !important;
+}
+.uploader-file-icon[icon=audio]::before {
+  content: url(../../assets/small-music.png) !important;
+}
+.uploader-file-icon[icon=document]::before {
+  content: url(../../assets/small-document.png) !important;
 }
 </style>

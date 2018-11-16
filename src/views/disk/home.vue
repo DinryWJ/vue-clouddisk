@@ -399,3 +399,29 @@ export default {
   opacity: 0;
 }
 </style>
+
+<style>
+.uploader-file-icon::before {
+  content: url(../../assets/small-file.png) !important;
+  display: block;
+  height: 100%;
+  font-size: 24px;
+  line-height: 1;
+  text-indent: 0;
+}
+.uploader-file-icon[icon=folder]::before {
+  content: url(../../assets/small-folder.png) !important;
+}
+.uploader-file-icon[icon=image]::before {
+  content: url(../../assets/small-image.png) !important;
+}
+.uploader-file-icon[icon=video]::before {
+  content: url(../../assets/small-video.png) !important;
+}
+.uploader-file-icon[icon=audio]::before {
+  content: url(../../assets/small-music.png) !important;
+}
+.uploader-file-icon[icon=document]::before {
+  content: url(../../assets/small-document.png) !important;
+}
+</style>

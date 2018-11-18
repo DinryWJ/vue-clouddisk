@@ -124,6 +124,9 @@ export default {
         simultaneousUploads: 1,
         query: function(file) {
           return { md5: file.md5 };
+        },
+        headers:{
+          'Authorization':this.$store.state.token
         }
       },
       attrs: {

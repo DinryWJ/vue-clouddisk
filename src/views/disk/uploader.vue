@@ -1,4 +1,5 @@
 <template>
+<div>
   <uploader :options="options" class="uploader-example" ref="uploader">
     <uploader-unsupport></uploader-unsupport>
     <uploader-drop>
@@ -9,9 +10,12 @@
     </uploader-drop>
     <uploader-list></uploader-list>
   </uploader>
+  <el-button @click="test">qwe</el-button>
+</div>
 </template>
 
 <script>
+import axion from "@/utils/http_url.js"; //接口文件
 import { fileMd5HeadTailTime } from "../../utils/md5.js";
 export default {
   data() {
@@ -25,6 +29,9 @@ export default {
         simultaneousUploads: 1,
         query: function(file) {
           return { md5: file.md5 };
+        },
+        headers:{
+          'Authorization':this.$store.state.token
         }
       },
       attrs: {
@@ -46,6 +53,16 @@ export default {
         chunk.preprocessFinished();
       }
       console.log(chunk.file.md5);
+    },
+    test(){
+      axion.test().then(d => {
+          if (d.data.returnCode != 200) {
+            this.$alert(d.data.type, "提示", {});
+            return;
+          }
+          this.$message(d.data.returnData);
+          
+        });
     }
   }
 };

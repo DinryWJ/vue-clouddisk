@@ -45,7 +45,9 @@ const post2 = (_url, body) => axios.post(_url, body, modelBase).then(codeerror).
 const login = (username, password) => post('/login/login', username, password)
 /*注册*/
 const register = (parameters) => post('/login/register', parameters)
+const test = () => post('/article')
 export default {
   login,
-  register
+  register,
+  test
 }

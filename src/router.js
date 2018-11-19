@@ -133,6 +133,23 @@ const routes = [...mainRoutes, ...adminRoutes]
 var router = new Router({
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requireAuth) {
+    if (sessionStorage.getItem("token") != null) {
+      next();
+    } else {
+      next({
+        path: '/',
+        query: { redirect: to.fullPath }
+      })
+    }
+  }else{
+    next();
+  }
+})
+
+
 export default router;
 export {
   sideRoutes

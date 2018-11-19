@@ -11,53 +11,11 @@ import { changeTitle } from '@/utils'
 import contentmenu from 'v-contextmenu'
 import 'v-contextmenu/dist/index.css'
 import uploader from 'vue-simple-uploader'
-import Vuex from 'vuex'
-
-Vue.use(Vuex)
+import store from '@/store'
 Vue.use(contentmenu)
 Vue.use(uploader)
 Vue.config.productionTip = false
 
-const ADD_TOKEN = 'ADD_TOKEN';
-const REMOVE_TOKEN = 'REMOVE_TOKEN';
-let store = new Vuex.Store({
-  state: {
-    token: "",
-    userId: ""
-  },
-  mutations: {
-    [ADD_TOKEN](state, token) {
-      sessionStorage.setItem("token", token);
-      state.token = token;
-    },
-    [REMOVE_TOKEN](state, token) {
-      sessionStorage.removeItem("token", token);
-      state.token = token;
-    }
-  },
-  actions: {
-
-  }
-})
-
-router.beforeEach((to, from, next) => {
-  if (null != sessionStorage.getItem("token")) {
-    store.state.token = sessionStorage.getItem("token");
-  }
-
-  if (to.meta.requireAuth) {
-    if (store.state.token !== "") {
-      next();
-    } else {
-      next({
-        path: '/',
-        query: { redirect: to.fullPath }
-      })
-    }
-  }else{
-    next();
-  }
-})
 
 new Vue({
   router,

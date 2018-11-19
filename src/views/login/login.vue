@@ -46,29 +46,43 @@ export default {
       }
     };
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
-    login(){
-      axion
-        .login({
-          username: this.name,
-          password: this.pass
-        })
-        .then(d => {
-          if (d.data.returnCode != 200) {
-            this.$alert(d.data.type, "提示", {});
-            return;
-          }
-          this.$store.commit('ADD_TOKEN',d.data.returnData);
-          if (this.$route.query.redirect != null) {
-            this.$router.push(this.$route.query.redirect);   
-          }else{
-            this.$router.push("/disk/home");
-          }
-        });
+    login() {
+      let flag = true;
+      if (this.name === "" && this.pass === "") {
+        this.$message('用户名密码不能为空');
+        flag = false;
+      }
+      if (this.name === "" && this.pass !== "") {
+        this.$message('用户名不能为空');
+        flag = false;
+      }
+      if(this.name !== "" && this.pass === ""){
+        this.$message('密码不能为空');
+        flag = false;
+      }
+      if (flag) {
+        axion
+          .login({
+            username: this.name,
+            password: this.pass
+          })
+          .then(d => {
+            if (d.data.returnCode != 200) {
+              this.$message(d.data.returnData);
+              return;
+            }
+            this.$store.commit("ADD_TOKEN", d.data.returnData);
+            if (this.$route.query.redirect != null) {
+              this.$router.push(this.$route.query.redirect);
+            } else {
+              this.$router.push("/disk/home");
+            }
+          });
+      }
     },
-    goRegister(){
+    goRegister() {
       this.$router.push("/register");
     }
   }
@@ -83,7 +97,7 @@ export default {
   margin-top: 30%;
   padding: 0px 20px;
 }
-.slogan{
+.slogan {
   font-size: 44px;
   color: #fff;
   margin-top: 200px;

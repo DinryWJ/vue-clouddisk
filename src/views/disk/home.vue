@@ -126,7 +126,7 @@ export default {
           return { md5: file.md5 };
         },
         headers:{
-          'Authorization':this.$store.state.token
+          'Authorization': localStorage.getItem('token')
         }
       },
       attrs: {
@@ -254,19 +254,25 @@ export default {
   methods: {
     init() {
       document.getElementsByTagName("body")[0].style.overflow = "hidden";
-      // let _this = this;
-      // let uploaderInstance = this.$refs.uploader.uploader;
-      // uploaderInstance.on("fileSuccess", function(
-      //   rootFile,
-      //   file,
-      //   message,
-      //   chunk
-      // ) {
-      //   console.log(rootFile, file, message, chunk);
-      // });
-      // uploaderInstance.on('fileAdded',function(file, event){
-      //   return true;
-      // })
+      let _this = this;
+      let uploaderInstance = this.$refs.uploader.uploader;
+      uploaderInstance.on("fileSuccess", function(
+        rootFile,
+        file,
+        message,
+        chunk
+      ) {
+        console.log(rootFile, file, message, chunk);
+      });
+      uploaderInstance.on('fileAdded',function(file, event){
+        axion.validAuth().then(d => {
+            if (d.data.returnCode != 200) {
+              this.$message(d.data.returnData);
+              return false;
+            }
+            return true;
+          });
+      })
     },
     preprocess(chunk) {
       let uploaderInstance = this.$refs.uploader.uploader;

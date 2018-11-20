@@ -47,9 +47,13 @@ const get = (_url,obj) => axios.get(_url,objBase).then(codeerror).catch(errorFn)
 const login = (username, password) => post('/login/login', username, password)
 /*注册*/
 const register = (parameters) => post('/login/register', parameters)
-const test = () => get('/require_auth')
+/*判断用户是否存在*/
+const valid = (username) => get('/login/valid?username='+username)
+/*验证登陆状态*/
+const validAuth = () => get('/require_auth')
 export default {
   login,
   register,
-  test
+  valid,
+  validAuth
 }

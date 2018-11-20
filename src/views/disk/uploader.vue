@@ -30,8 +30,18 @@ export default {
         query: function(file) {
           return { md5: file.md5 };
         },
-        headers:{
-          'Authorization':this.$store.state.token
+        headers: {
+          Authorization: localStorage.getItem("token")
+        },
+        checkChunkUploadedByResponse: function(chunk, message) {
+          var objMessage = {};
+          try {
+            objMessage = JSON.parse(message);
+          } catch (e) {}
+          // fake response
+          // objMessage.uploaded_chunks = [2, 3, 4, 5, 6, 8, 10, 11, 12, 13, 17, 20, 21]
+          // check the chunk is uploaded
+          return (objMessage.returnData || []).indexOf(chunk.offset + 1) >= 0;
         }
       },
       attrs: {
@@ -39,7 +49,34 @@ export default {
       }
     };
   },
+  mounted() {
+    this.init();
+  },
+  props: {
+    theme: String
+  },
   methods: {
+    init() {
+      let _this = this;
+      let uploaderInstance = this.$refs.uploader.uploader;
+      uploaderInstance.on("fileSuccess", function(
+        rootFile,
+        file,
+        message,
+        chunk
+      ) {
+        console.log(rootFile, file, message, chunk);
+      });
+      uploaderInstance.on("fileAdded", function(file, event) {
+        axion.validAuth().then(d => {
+          if (d.data.returnCode != 200) {
+            this.$message(d.data.returnData);
+            return false;
+          }
+          return true;
+        });
+      });
+    },
     preprocess(chunk) {
       let uploaderInstance = this.$refs.uploader.uploader;
       // 上传或test之前执行,生成md5(如果file存在md5 就不生成了)
@@ -54,15 +91,14 @@ export default {
       }
       console.log(chunk.file.md5);
     },
-    test(){
+    test() {
       axion.test().then(d => {
-          if (d.data.returnCode != 200) {
-            this.$alert(d.data.type, "提示", {});
-            return;
-          }
-          this.$message(d.data.returnData);
-          
-        });
+        if (d.data.returnCode != 200) {
+          this.$alert(d.data.type, "提示", {});
+          return;
+        }
+        this.$message(d.data.returnData);
+      });
     }
   }
 };
@@ -85,7 +121,6 @@ export default {
   overflow-x: hidden;
   overflow-y: auto;
 }
-
 </style>
 
 <style>
@@ -97,19 +132,19 @@ export default {
   line-height: 1;
   text-indent: 0;
 }
-.uploader-file-icon[icon=folder]::before {
+.uploader-file-icon[icon="folder"]::before {
   content: url(../../assets/small-folder.png) !important;
 }
-.uploader-file-icon[icon=image]::before {
+.uploader-file-icon[icon="image"]::before {
   content: url(../../assets/small-image.png) !important;
 }
-.uploader-file-icon[icon=video]::before {
+.uploader-file-icon[icon="video"]::before {
   content: url(../../assets/small-video.png) !important;
 }
-.uploader-file-icon[icon=audio]::before {
+.uploader-file-icon[icon="audio"]::before {
   content: url(../../assets/small-music.png) !important;
 }
-.uploader-file-icon[icon=document]::before {
+.uploader-file-icon[icon="document"]::before {
   content: url(../../assets/small-document.png) !important;
 }
 </style>

@@ -34,8 +34,12 @@ export default {
       if (!value) {
         return callback(new Error("账号不能为空"));
       }
-      callback();
-  
+      axion.valid(value).then(d => {
+        if (d.data.returnCode != 200) {
+          return callback(new Error(d.data.returnData));
+        }
+        callback();
+      });
     };
     var validatePass = (rule, value, callback) => {
       if (value === "") {
@@ -78,7 +82,19 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
+          axion
+            .register({
+              username: this.ruleForm2.name,
+              pass: this.ruleForm2.pass,
+              checkpass: this.ruleForm2.checkPass
+            })
+            .then(d => {
+              if (d.data.returnCode != 200) {
+                this.$message(d.data.returnData);
+                return;
+              }
+              this.$router.push("/");
+            });
         } else {
           console.log("error submit!!");
           return false;

@@ -136,7 +136,7 @@ var router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAuth) {
-    if (sessionStorage.getItem("token") != null) {
+    if (localStorage.getItem("token") != null) {
       next();
     } else {
       next({

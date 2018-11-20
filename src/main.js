@@ -29,11 +29,11 @@ let store = new Vuex.Store({
   },
   mutations: {
     [ADD_TOKEN](state, token) {
-      sessionStorage.setItem("token", token);
+      localStorage.setItem("token", token);
       state.token = token;
     },
     [REMOVE_TOKEN](state, token) {
-      sessionStorage.removeItem("token");
+      localStorage.removeItem("token");
       state.token = token;
     }
   },
@@ -45,7 +45,8 @@ let store = new Vuex.Store({
 //http request拦截器
 axios.interceptors.request.use(
   config => {
-    var token = sessionStorage.getItem('token');
+    var token = localStorage.getItem('token');
+    store.state.token = token;
     if (token) {
       // 判断是否存在token，如果存在的话，则每个http header都加上token
       config.headers.Authorization = token;

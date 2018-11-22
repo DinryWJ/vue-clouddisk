@@ -10,8 +10,8 @@ import {
 const errorMsg = '服务器内部错误'
 const errorMsg401 = '登录超时，请重新登录'
 const errorFn = err => {
-  console.log(err.response.status)
-  let status = err.response.status
+  console.log(err.returnCode)
+  let status = err.returnCode
   if (status == 500) {
     Message.error(errorMsg)
   }
@@ -21,8 +21,8 @@ const errorFn = err => {
   return err
 }
 const codeerror = d => {
-  if (d.data != null && d.data.code == 401) {
-    Message.error(d.data.msg)
+  if (d.data != null && d.data.returnCode == 401) {
+    Message.error(d.data.returnType)
   }
   return d
 }
@@ -51,9 +51,12 @@ const register = (parameters) => post('/login/register', parameters)
 const valid = (username) => get('/login/valid?username='+username)
 /*验证登陆状态*/
 const validAuth = () => get('/require_auth')
+/*保存文件至文件目录中*/
+const saveFileToContent= (fileId,fileName,rootPath,directory,fileType) => post('/content/saveFileToContent',fileId,fileName,rootPath,directory,fileType)
 export default {
   login,
   register,
   valid,
-  validAuth
+  validAuth,
+  saveFileToContent
 }

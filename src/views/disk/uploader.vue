@@ -20,12 +20,30 @@ import { fileMd5HeadTailTime } from "../../utils/md5.js";
 export default {
   data() {
     return {
-      options: {
+      rootPath: "/",
+      options: {},
+      attrs: {
+        accept: "image/*"
+      }
+    };
+  },
+  created() {
+    this.getOption(this);
+  },
+  mounted() {
+    this.init();
+  },
+  props: {
+    theme: String
+  },
+  methods: {
+    getOption(_this) {
+      _this.options = {
         // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
         target: "http://localhost:12315/upload",
         testChunks: true,
         chunkSize: 64 * 1024 * 1024,
-        preprocess: this.preprocess,
+        preprocess: _this.preprocess,
         simultaneousUploads: 1,
         query: function(file) {
           return { md5: file.md5 };
@@ -41,41 +59,40 @@ export default {
           // fake response
           // objMessage.uploaded_chunks = [2, 3, 4, 5, 6, 8, 10, 11, 12, 13, 17, 20, 21]
           // check the chunk is uploaded
-          return (objMessage.returnData || []).indexOf(chunk.offset + 1) >= 0;
+          return (objMessage.returnData.chunks || []).indexOf(chunk.offset + 1) >= 0;
         }
-      },
-      attrs: {
-        accept: "image/*"
-      }
-    };
-  },
-  mounted() {
-    this.init();
-  },
-  props: {
-    theme: String
-  },
-  methods: {
+      };
+    },
     init() {
       let _this = this;
       let uploaderInstance = this.$refs.uploader.uploader;
-      uploaderInstance.on("fileSuccess", function(
-        rootFile,
-        file,
-        message,
-        chunk
-      ) {
-        console.log(rootFile, file, message, chunk);
-      });
+      uploaderInstance.on("fileSuccess", this.saveFileToContent);
       uploaderInstance.on("fileAdded", function(file, event) {
         axion.validAuth().then(d => {
-          if (d.data.returnCode != 200) {
-            this.$message(d.data.returnData);
-            return false;
-          }
+          // if (d.data.returnCode != 200) {
+          //   return false;
+          // }
+          //设置为true，axios拦截器会拦截401
           return true;
         });
       });
+    },
+    saveFileToContent(rootFile, file, message, chunk) {
+      let fileId = JSON.parse(message).returnData.fileId;
+      axion
+        .saveFileToContent({
+          fileId: fileId,
+          rootPath: this.rootPath,
+          fileName: file.name,
+          directory: file.isFolder,
+          fileType: file.fileType
+        })
+        .then(d => {
+          if (d.data.returnCode != 200) {
+            this.$message(d.data.returnData);
+          }
+          this.$message("success");
+        });
     },
     preprocess(chunk) {
       let uploaderInstance = this.$refs.uploader.uploader;
@@ -92,7 +109,7 @@ export default {
       console.log(chunk.file.md5);
     },
     test() {
-      axion.test().then(d => {
+      axion.validAuth().then(d => {
         if (d.data.returnCode != 200) {
           this.$alert(d.data.type, "提示", {});
           return;

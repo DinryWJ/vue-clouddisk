@@ -106,7 +106,7 @@
 </template>
 <script>
 import axion from "@/utils/http_url.js"; //接口文件
-import {fileMd5HeadTailTime} from '../../utils/md5.js'
+import { fileMd5HeadTailTime } from "../../utils/md5.js";
 export default {
   data() {
     return {
@@ -116,19 +116,8 @@ export default {
       tableHeight: window.innerHeight - 180,
       input: "",
       multiDisabled: true,
-      options: {
-        target: "http://localhost:12315/upload",
-        testChunks: true,
-        chunkSize: 64 * 1024 * 1024,
-        preprocess: this.preprocess,
-        simultaneousUploads: 1,
-        query: function(file) {
-          return { md5: file.md5 };
-        },
-        headers:{
-          'Authorization': localStorage.getItem('token')
-        }
-      },
+      rootPath: "/",
+      options: {},
       attrs: {
         accept: "image/*"
       },
@@ -245,6 +234,9 @@ export default {
       multipleSelection: []
     };
   },
+  created() {
+    this.getOption(this);
+  },
   mounted() {
     this.init();
   },
@@ -252,27 +244,62 @@ export default {
     theme: String
   },
   methods: {
+    getOption(_this) {
+      _this.options = {
+        // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
+        target: "http://localhost:12315/upload",
+        testChunks: true,
+        chunkSize: 64 * 1024 * 1024,
+        preprocess: _this.preprocess,
+        simultaneousUploads: 1,
+        query: function(file) {
+          return { md5: file.md5 };
+        },
+        headers: {
+          Authorization: localStorage.getItem("token")
+        },
+        checkChunkUploadedByResponse: function(chunk, message) {
+          var objMessage = {};
+          try {
+            objMessage = JSON.parse(message);
+          } catch (e) {}
+          // fake response
+          // objMessage.uploaded_chunks = [2, 3, 4, 5, 6, 8, 10, 11, 12, 13, 17, 20, 21]
+          // check the chunk is uploaded
+          return (objMessage.returnData || []).indexOf(chunk.offset + 1) >= 0;
+        }
+      };
+    },
     init() {
       document.getElementsByTagName("body")[0].style.overflow = "hidden";
       let _this = this;
       let uploaderInstance = this.$refs.uploader.uploader;
-      uploaderInstance.on("fileSuccess", function(
-        rootFile,
-        file,
-        message,
-        chunk
-      ) {
-        console.log(rootFile, file, message, chunk);
-      });
-      uploaderInstance.on('fileAdded',function(file, event){
+      uploaderInstance.on("fileSuccess", this.saveFileToContent);
+      uploaderInstance.on("fileAdded", function(file, event) {
         axion.validAuth().then(d => {
-            if (d.data.returnCode != 200) {
-              this.$message(d.data.returnData);
-              return false;
-            }
-            return true;
-          });
-      })
+          if (d.data.returnCode != 200) {
+            return false;
+          }
+          return true;
+        });
+      });
+    },
+    saveFileToContent(rootFile, file, message, chunk) {
+      let fileId = JSON.parse(message).returnData;
+      axion
+        .saveFileToContent({
+          fileId: fileId,
+          fileName: file.name,
+          rootPath: this.rootPath,
+          directory: file.isFolder,
+          fileType: file.fileType
+        })
+        .then(d => {
+          if (d.data.returnCode != 200) {
+            this.$message(d.data.returnData);
+          }
+          this.$message("success");
+        });
     },
     preprocess(chunk) {
       let uploaderInstance = this.$refs.uploader.uploader;
@@ -418,19 +445,19 @@ export default {
   line-height: 1;
   text-indent: 0;
 }
-.uploader-file-icon[icon=folder]::before {
+.uploader-file-icon[icon="folder"]::before {
   content: url(../../assets/small-folder.png) !important;
 }
-.uploader-file-icon[icon=image]::before {
+.uploader-file-icon[icon="image"]::before {
   content: url(../../assets/small-image.png) !important;
 }
-.uploader-file-icon[icon=video]::before {
+.uploader-file-icon[icon="video"]::before {
   content: url(../../assets/small-video.png) !important;
 }
-.uploader-file-icon[icon=audio]::before {
+.uploader-file-icon[icon="audio"]::before {
   content: url(../../assets/small-music.png) !important;
 }
-.uploader-file-icon[icon=document]::before {
+.uploader-file-icon[icon="document"]::before {
   content: url(../../assets/small-document.png) !important;
 }
 </style>

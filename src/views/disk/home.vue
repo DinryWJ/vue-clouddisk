@@ -266,40 +266,45 @@ export default {
           // fake response
           // objMessage.uploaded_chunks = [2, 3, 4, 5, 6, 8, 10, 11, 12, 13, 17, 20, 21]
           // check the chunk is uploaded
-          return (objMessage.returnData || []).indexOf(chunk.offset + 1) >= 0;
+          return (
+            (objMessage.returnData.chunks || []).indexOf(chunk.offset + 1) >= 0
+          );
         }
       };
     },
     init() {
-      document.getElementsByTagName("body")[0].style.overflow = "hidden";
       let _this = this;
       let uploaderInstance = this.$refs.uploader.uploader;
       uploaderInstance.on("fileSuccess", this.saveFileToContent);
       uploaderInstance.on("fileAdded", function(file, event) {
         axion.validAuth().then(d => {
-          if (d.data.returnCode != 200) {
-            return false;
-          }
+          // if (d.data.returnCode != 200) {
+          //   return false;
+          // }
+          //设置为true，axios拦截器会拦截401
           return true;
         });
       });
     },
     saveFileToContent(rootFile, file, message, chunk) {
-      let fileId = JSON.parse(message).returnData;
-      axion
-        .saveFileToContent({
-          fileId: fileId,
-          fileName: file.name,
-          rootPath: this.rootPath,
-          directory: file.isFolder,
-          fileType: file.fileType
-        })
-        .then(d => {
-          if (d.data.returnCode != 200) {
-            this.$message(d.data.returnData);
-          }
-          this.$message("success");
-        });
+      if (JSON.parse(message).returnData.success == "true") {
+        let fileId = JSON.parse(message).returnData.fileId;
+        axion
+          .saveFileToContent({
+            fileId: fileId,
+            rootPath: this.rootPath,
+            fileName: file.name,
+            totalSize: file.size,
+            directory: file.isFolder,
+            fileType: file.fileType
+          })
+          .then(d => {
+            if (d.data.returnCode != 200) {
+              this.$message(d.data.returnData);
+            }
+            this.$message("success");
+          });
+      }
     },
     preprocess(chunk) {
       let uploaderInstance = this.$refs.uploader.uploader;

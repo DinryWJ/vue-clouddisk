@@ -41,22 +41,25 @@ const codeerror = d => {
 }).then(codeerror).catch(errorFn)*/
 const post = (_url, obj) => axios.post(_url, obj, objBase).then(codeerror).catch(errorFn)
 const post2 = (_url, body) => axios.post(_url, body, modelBase).then(codeerror).catch(errorFn)
-const get = (_url,obj) => axios.get(_url,objBase).then(codeerror).catch(errorFn)
+const get = (_url, obj) => axios.get(_url, objBase).then(codeerror).catch(errorFn)
 
 /*登陆*/
 const login = (username, password) => post('/login/login', username, password)
 /*注册*/
 const register = (parameters) => post('/login/register', parameters)
 /*判断用户是否存在*/
-const valid = (username) => get('/login/valid?username='+username)
+const valid = (username) => get('/login/valid?username=' + username)
 /*验证登陆状态*/
 const validAuth = () => get('/require_auth')
 /*保存文件至文件目录中*/
-const saveFileToContent= (fileId,fileName,totalSize,rootPath,directory,fileType) => post('/content/saveFileToContent',fileId,fileName,totalSize,rootPath,directory,fileType)
+const saveFileToContent = (fileId, fileName, totalSize, rootPath, directory, fileType) => post('/content/saveFileToContent', fileId, fileName, totalSize, rootPath, directory, fileType)
+/*获取文件目录*/
+const getContent = (parentId) => get('/content/getContent?parentId=' + parentId)
 export default {
   login,
   register,
   valid,
   validAuth,
-  saveFileToContent
+  saveFileToContent,
+  getContent
 }

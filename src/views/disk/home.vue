@@ -35,8 +35,8 @@
     </div>
 
     <div class="body">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item>首页</el-breadcrumb-item>
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item v-for="bread in breadList" v-bind:key="bread.id"><el-button type="text"  @click="backFolder(bread.id)">{{bread.name}}</el-button></el-breadcrumb-item>
       </el-breadcrumb>
 
       <el-table
@@ -57,7 +57,8 @@
           min-width="500">
           <template slot-scope="scope">
             <i class="fas fa-folder fa-2x"></i>
-            <span style="margin-left:20px;">{{ scope.row.name }}</span>
+            <el-button v-if="scope.row.isFolder" type="text" style="margin-left:10px;" @click="openFolder(scope.$index,scope.row.id)">{{ scope.row.name }}</el-button>
+            <span v-else style="margin-left:10px;">{{ scope.row.name }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -118,9 +119,16 @@ export default {
       attrs: {
         accept: "image/*"
       },
+      breadList: [],
       tableData: [],
       multipleSelection: []
     };
+  },
+  beforeCreate() {
+    document.getElementsByTagName("body")[0].className = "active";
+  },
+  beforDestory() {
+    document.body.removeAttribute("class","active");
   },
   created() {
     this.getOption(this);
@@ -161,18 +169,23 @@ export default {
       let uploaderInstance = this.$refs.uploader.uploader;
       uploaderInstance.on("fileSuccess", this.saveFileToContent);
       uploaderInstance.on("fileAdded", function(file, event) {
-        axion.validAuth().then(d => {return true});
+        axion.validAuth().then(d => {
+          return true;
+        });
       });
       this.getContent(0);
+      let bread = {};
+      bread.id = 0;
+      bread.name = "首页";
+      this.breadList.push(bread);
     },
-    getContent(val){
+    getContent(val) {
       let _this = this;
-      axion.getContent(val).then(d=>{
+      axion.getContent(val).then(d => {
         if (d.data.returnCode != 200) {
           _this.$message(d.data.returnData);
         }
-        
-        for(let i=0;i<d.data.returnData.contents.length;i++){
+        for (let i = 0; i < d.data.returnData.contents.length; i++) {
           let temp = {};
           temp.id = d.data.returnData.contents[i].id;
           temp.name = d.data.returnData.contents[i].name;
@@ -182,7 +195,7 @@ export default {
           temp.isFolder = true;
           _this.tableData.push(temp);
         }
-        for(let i=0;i<d.data.returnData.files.length;i++){
+        for (let i = 0; i < d.data.returnData.files.length; i++) {
           let temp = {};
           temp.id = d.data.returnData.files[i].id;
           temp.name = d.data.returnData.files[i].name;
@@ -192,8 +205,26 @@ export default {
           temp.isFolder = false;
           _this.tableData.push(temp);
         }
-        
       });
+    },
+    openFolder(index, val) {
+      let bread = {};
+      bread.id = this.tableData[index].id;
+      bread.name = this.tableData[index].name;
+      this.breadList.push(bread);
+      this.tableData = new Array();
+      this.getContent(val);
+    },
+    backFolder(id) {
+      let flag = false;
+      for (let i = 0; i < this.breadList.length; i++) {
+        if (this.breadList[i].id == id) {
+          this.breadList.splice(i + 1, this.breadList.length - i);
+          break;
+        }
+      }
+      this.tableData = new Array();
+      this.getContent(id);
     },
     saveFileToContent(rootFile, file, message, chunk) {
       if (JSON.parse(message).returnData.success == "true") {
@@ -350,6 +381,9 @@ export default {
 </style>
 
 <style>
+.active {
+  overflow: hidden;
+}
 .uploader-file-icon::before {
   content: url(../../assets/small-file.png) !important;
   display: block;

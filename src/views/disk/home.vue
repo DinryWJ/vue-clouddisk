@@ -36,10 +36,7 @@
 
     <div class="body">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="/">活动管理</a></el-breadcrumb-item>
-        <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-        <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+        <el-breadcrumb-item>首页</el-breadcrumb-item>
       </el-breadcrumb>
 
       <el-table
@@ -121,116 +118,7 @@ export default {
       attrs: {
         accept: "image/*"
       },
-      tableData: [
-        {
-          id: 1,
-          date: "2016-05-02",
-          name: "文件夹3",
-          size: "-"
-        },
-        {
-          id: 2,
-          date: "2016-05-04",
-          name: "文件夹2",
-          size: "-"
-        },
-        {
-          id: 3,
-          date: "2016-05-01",
-          name: "文件夹1",
-          size: "-"
-        },
-        {
-          id: 4,
-          date: "2016-05-03",
-          name: "图片.jpg",
-          size: "100KB"
-        },
-        {
-          id: 5,
-          date: "2016-05-04",
-          name: "压缩包.zip",
-          size: "100.16M"
-        },
-        {
-          id: 6,
-          date: "2016-05-01",
-          name: "深入理解java.pdf",
-          size: "100.16M"
-        },
-        {
-          id: 7,
-          date: "2016-05-03",
-          name: "音乐.mp3",
-          size: "100.16M"
-        },
-        {
-          id: 8,
-          date: "2016-05-04",
-          name: "大学物理.ppt",
-          size: "100.16M"
-        },
-        {
-          id: 9,
-          date: "2016-05-01",
-          name: "catalina.out",
-          size: "100.16M"
-        },
-        {
-          id: 10,
-          date: "2016-05-03",
-          name: "图片.jpg",
-          size: "100.16M"
-        },
-        {
-          id: 11,
-          date: "2016-05-04",
-          name: "未知格式.12",
-          size: "100.16M"
-        },
-        {
-          id: 12,
-          date: "2016-05-01",
-          name: "视频.mp4",
-          size: "100.16M"
-        },
-        {
-          id: 13,
-          date: "2016-05-03",
-          name: "电影.avi",
-          size: "100.16M"
-        },
-        {
-          id: 14,
-          date: "2016-05-03",
-          name: "电影.avi",
-          size: "100.16M"
-        },
-        {
-          id: 15,
-          date: "2016-05-04",
-          name: "可执行文件.exe",
-          size: "100.16M"
-        },
-        {
-          id: 16,
-          date: "2016-05-01",
-          name: "压缩包.zip",
-          size: "100.16M"
-        },
-        {
-          id: 17,
-          date: "2016-05-03",
-          name: "压缩包.rar",
-          size: "100.16M"
-        },
-        {
-          id: 18,
-          date: "2016-05-04",
-          name: "可执行文件.exe",
-          size: "100.16M"
-        }
-      ],
+      tableData: [],
       multipleSelection: []
     };
   },
@@ -263,9 +151,6 @@ export default {
           try {
             objMessage = JSON.parse(message);
           } catch (e) {}
-          // fake response
-          // objMessage.uploaded_chunks = [2, 3, 4, 5, 6, 8, 10, 11, 12, 13, 17, 20, 21]
-          // check the chunk is uploaded
           return (
             (objMessage.returnData.chunks || []).indexOf(chunk.offset + 1) >= 0
           );
@@ -273,17 +158,41 @@ export default {
       };
     },
     init() {
-      let _this = this;
       let uploaderInstance = this.$refs.uploader.uploader;
       uploaderInstance.on("fileSuccess", this.saveFileToContent);
       uploaderInstance.on("fileAdded", function(file, event) {
-        axion.validAuth().then(d => {
-          // if (d.data.returnCode != 200) {
-          //   return false;
-          // }
-          //设置为true，axios拦截器会拦截401
-          return true;
-        });
+        axion.validAuth().then(d => {return true});
+      });
+      this.getContent(0);
+    },
+    getContent(val){
+      let _this = this;
+      axion.getContent(val).then(d=>{
+        if (d.data.returnCode != 200) {
+          _this.$message(d.data.returnData);
+        }
+        
+        for(let i=0;i<d.data.returnData.contents.length;i++){
+          let temp = {};
+          temp.id = d.data.returnData.contents[i].id;
+          temp.name = d.data.returnData.contents[i].name;
+          temp.date = d.data.returnData.contents[i].updateTime;
+          temp.size = "-";
+          temp.fileType = "folder";
+          temp.isFolder = true;
+          _this.tableData.push(temp);
+        }
+        for(let i=0;i<d.data.returnData.files.length;i++){
+          let temp = {};
+          temp.id = d.data.returnData.files[i].id;
+          temp.name = d.data.returnData.files[i].name;
+          temp.date = d.data.returnData.files[i].updateTime;
+          temp.size = d.data.returnData.files[i].totalSize;
+          temp.fileType = d.data.returnData.files[i].fileType;
+          temp.isFolder = false;
+          _this.tableData.push(temp);
+        }
+        
       });
     },
     saveFileToContent(rootFile, file, message, chunk) {
@@ -318,7 +227,6 @@ export default {
       } else {
         chunk.preprocessFinished();
       }
-      // console.log(chunk.file.md5);
     },
     handleCommand(command) {},
     handleEdit(index, row) {

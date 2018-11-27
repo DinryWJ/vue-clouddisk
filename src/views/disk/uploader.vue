@@ -2,15 +2,22 @@
 <div>
   <uploader :options="options" class="uploader-example" ref="uploader">
     <uploader-unsupport></uploader-unsupport>
-    <uploader-drop>
+    <!-- <uploader-drop>
       <p>Drop files here to upload or</p>
       <uploader-btn>select files</uploader-btn>
       <uploader-btn :attrs="attrs">select images</uploader-btn>
       <uploader-btn :directory="true">select folder</uploader-btn>
-    </uploader-drop>
+    </uploader-drop> -->
     <uploader-list></uploader-list>
   </uploader>
-  <el-button @click="test">qwe</el-button>
+  <el-button id="btn">qwe</el-button>
+  <el-popover placement="bottom" width="400" trigger="click">
+  <div class="uploaditem"><i class="fas fa-plus"></i><span style="margin-left:10px;">文件夹</span></div>
+  <hr style="border:1 dashed" color=#f0f1f3 SIZE=1/>
+  <div class="uploaditem" id="upload-file"><i class="fas fa-file-upload"></i><span style="margin-left:10px;">上传文件</span></div>
+  <div class="uploaditem" id="upload-folder"><i class="fas fa-folder-plus"></i><span style="margin-left:10px;">上传文件夹</span></div>
+  <el-button type="primary" icon="fas fa-plus-square" slot="reference">新建</el-button>
+  </el-popover>
 </div>
 </template>
 
@@ -78,6 +85,7 @@ export default {
           return true;
         });
       });
+      uploaderInstance.assignBrowse(document.getElementById('upload-file'), false, false, {});
     },
     saveFileToContent(rootFile, file, message, chunk) {
       if (JSON.parse(message).returnData.success == "true") {
@@ -127,6 +135,16 @@ export default {
 </script>
 
 <style scoped>
+.uploaditem{
+  cursor:pointer;
+  font-size:15px;
+  height:30px;
+  line-height:30px;
+  padding: 0 20px;
+}
+.uploaditem:hover{
+  background-color: #f0f1f3;
+}
 .uploader-example {
   width: 880px;
   padding: 15px;

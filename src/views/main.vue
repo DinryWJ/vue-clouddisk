@@ -77,11 +77,6 @@ export default {
   width: 200px;
   z-index: 100;
 }
-.navbar,
-#sidebar,
-.el-menu-item {
-  background-color: #eff4f8;
-}
 .el-menu-item:hover {
   background-color: #e3e8eb;
 }

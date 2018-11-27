@@ -20,23 +20,34 @@
       <v-contextmenu-item @click="handleClick">删除</v-contextmenu-item>
     </v-contextmenu>
 
-
     <div class="nav">
-      <button id="uploadBtn" class="button button-primary button-raised button-glow button-longshadow-right" v-on:click="uploadshow=true">
-        <i class="fas fa-upload"></i>上传
-      </button>
-      <button class="button button-rounded"><i class="fas fa-folder-plus"></i>新建文件夹</button>
-      <button id="sort" class="button button-large button-plain button-borderless"><i class="fas fa-sort-amount-down"></i></button>
-      <el-input
-        placeholder="请输入内容"
-        suffix-icon="el-icon-search"
-        v-model="input">
-      </el-input>
+      <el-popover placement="bottom" width="300" trigger="click">
+        <div class="uploaditem">
+          <i class="fas fa-plus"></i>
+          <span style="margin-left:10px;">文件夹</span>
+        </div>
+        <hr style="border:1 dashed" color="#f0f1f3" size="1">
+        <div class="uploaditem" id="upload-file">
+          <i class="fas fa-file-upload"></i>
+          <span style="margin-left:10px;">上传文件</span>
+        </div>
+        <div class="uploaditem" id="upload-folder">
+          <i class="fas fa-folder-plus"></i>
+          <span style="margin-left:7px;">上传文件夹</span>
+        </div>
+        <el-button type="primary" icon="fas fa-plus-square" slot="reference">新建</el-button>
+      </el-popover>
+      <el-button id="sort">
+        <i class="fas fa-sort-amount-down"></i>
+      </el-button>
+      <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="input"></el-input>
     </div>
 
     <div class="body">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item v-for="bread in breadList" v-bind:key="bread.id"><el-button type="text"  @click="backFolder(bread.id)">{{bread.name}}</el-button></el-breadcrumb-item>
+        <el-breadcrumb-item v-for="bread in breadList" v-bind:key="bread.id">
+          <el-button type="text" @click="backFolder(bread.id)">{{bread.name}}</el-button>
+        </el-breadcrumb-item>
       </el-breadcrumb>
 
       <el-table
@@ -47,30 +58,27 @@
         style="width: 100%"
         @selection-change="handleSelectionChange"
         @row-contextmenu="clickTd"
-        @header-contextmenu="clickTh">
-        <el-table-column
-          type="selection"
-          width="55">
-        </el-table-column>
-        <el-table-column
-          label="文件"
-          min-width="500">
+        @header-contextmenu="clickTh"
+      >
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column label="文件" min-width="500">
           <template slot-scope="scope">
             <i class="fas fa-folder fa-2x"></i>
-            <el-button v-if="scope.row.isFolder" type="text" style="margin-left:10px;" @click="openFolder(scope.$index,scope.row.id)">{{ scope.row.name }}</el-button>
+            <el-button
+              v-if="scope.row.isFolder"
+              type="text"
+              style="margin-left:10px;"
+              @click="openFolder(scope.$index,scope.row.id)"
+            >{{ scope.row.name }}</el-button>
             <span v-else style="margin-left:10px;">{{ scope.row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column
-          label="大小"
-          width="180">
+        <el-table-column label="大小" width="180">
           <template slot-scope="scope">
             <span>{{ scope.row.size }}</span>
           </template>
         </el-table-column>
-        <el-table-column
-          label="修改时间"
-          width="180">
+        <el-table-column label="修改时间" width="180">
           <template slot-scope="scope">
             <span>{{ scope.row.date }}</span>
           </template>
@@ -78,27 +86,34 @@
       </el-table>
     </div>
     <transition name="fade">
-    <div class="uploadField" v-show="uploadshow">
-      <el-card class="box-card" body-style="padding: 0">
-        <div slot="header" class="clearfix">
-          <span>上传</span>
-          <el-button style="float: right; padding: 5px 0" type="text" @click="uploadshow = false;"><i class="fas fa-times"></i></el-button>
-          <el-button style="float: right; padding: 5px 0;margin-right:5px;" type="text"  @click="minimize"><i class="far fa-window-minimize" v-if="mini"></i><i v-else class="far fa-window-maximize"></i></el-button>
-        </div>
-        <div>
-          <uploader :options="options" class="uploader-example" ref="uploader">
-            <uploader-unsupport></uploader-unsupport>
-            <uploader-drop>
-              <div style="padding:5px 0">拖动上传到此处...</div>
-              <uploader-btn>选择文件</uploader-btn>
-              <uploader-btn :attrs="attrs">选择图片</uploader-btn>
-              <uploader-btn :directory="true">选择文件夹</uploader-btn>
-            </uploader-drop>
-            <uploader-list></uploader-list>
-          </uploader>
-        </div>
-      </el-card>
-    </div>
+      <div class="uploadField" v-show="uploadshow">
+        <el-card class="box-card" body-style="padding: 0;">
+          <div slot="header" class="clearfix">
+            <span>上传</span>
+            <el-button
+              style="float: right; padding: 5px 0"
+              type="text"
+              @click="uploadshow = false;"
+            >
+              <i class="fas fa-times"></i>
+            </el-button>
+            <el-button
+              style="float: right; padding: 5px 0;margin-right:5px;"
+              type="text"
+              @click="minimize"
+            >
+              <i class="far fa-window-minimize" v-if="mini"></i>
+              <i v-else class="far fa-window-maximize"></i>
+            </el-button>
+          </div>
+          <div v-show="uploadMain">
+            <uploader :options="options" class="uploader-example" ref="uploader">
+              <uploader-unsupport></uploader-unsupport>
+              <uploader-list></uploader-list>
+            </uploader>
+          </div>
+        </el-card>
+      </div>
     </transition>
   </div>
 </template>
@@ -110,6 +125,7 @@ export default {
     return {
       mini: true,
       uploadshow: false,
+      uploadMain:true,
       menuShow: false,
       tableHeight: window.innerHeight - 180,
       input: "",
@@ -123,12 +139,6 @@ export default {
       tableData: [],
       multipleSelection: []
     };
-  },
-  beforeCreate() {
-    document.getElementsByTagName("body")[0].className = "active";
-  },
-  beforDestory() {
-    document.body.removeAttribute("class","active");
   },
   created() {
     this.getOption(this);
@@ -166,13 +176,18 @@ export default {
       };
     },
     init() {
+      let _this = this;
       let uploaderInstance = this.$refs.uploader.uploader;
       uploaderInstance.on("fileSuccess", this.saveFileToContent);
       uploaderInstance.on("fileAdded", function(file, event) {
         axion.validAuth().then(d => {
+          _this.uploadshow = true;
+          _this.uploadMain = true;
           return true;
         });
       });
+      uploaderInstance.assignBrowse(document.getElementById('upload-file'), false, false, {});
+      uploaderInstance.assignBrowse(document.getElementById('upload-folder'), true, true, {});
       this.getContent(0);
       let bread = {};
       bread.id = 0;
@@ -313,18 +328,23 @@ export default {
     },
     minimize() {
       this.mini = !this.mini;
-      if (this.mini) {
-        document.getElementsByClassName("uploadField")[0].style.bottom = "0px";
-      } else {
-        document.getElementsByClassName("uploadField")[0].style.bottom =
-          "-445px";
-      }
+      this.uploadMain = !this.uploadMain;
     }
   }
 };
 </script>
 
 <style scoped>
+.uploaditem{
+  cursor:pointer;
+  font-size:15px;
+  height:30px;
+  line-height:30px;
+  padding: 0 20px;
+}
+.uploaditem:hover{
+  background-color: #f0f1f3;
+}
 .button {
   padding: 0 24px;
   margin-right: 10px;
@@ -343,15 +363,14 @@ export default {
 .uploadField {
   background-color: blueviolet;
   width: 614px;
-  height: 500px;
   position: absolute;
   right: 50px;
-  bottom: 0px;
+  bottom: 50px;
   z-index: 20;
 }
 .uploader-example {
   font-size: 12px;
-  min-height: 445px;
+  min-height: 300px;
   max-height: 445px;
 }
 .uploader-example .uploader-btn {
@@ -363,27 +382,9 @@ export default {
   overflow-x: hidden;
   overflow-y: auto;
 }
-/* 开始过渡阶段,动画出去阶段 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.5s ease-out;
-}
-/* 进入开始 */
-.fade-enter {
-  transform: translateY(500px);
-  opacity: 0;
-}
-/* 出去终点 */
-.fade-leave-active {
-  transform: translateY(500px);
-  opacity: 0;
-}
 </style>
 
 <style>
-.active {
-  overflow: hidden;
-}
 .uploader-file-icon::before {
   content: url(../../assets/small-file.png) !important;
   display: block;

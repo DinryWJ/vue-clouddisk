@@ -53,12 +53,12 @@ export default {
 
 <style scoped>
 .navbar {
-  background-color: #eff4f8;
+  /* background-color: #eff4f8; */
   padding: 0;
 }
 .el-menu-demo {
   margin-left: 250px;
-  background-color: #eff4f8;
+  /* background-color: #eff4f8; */
 }
 .menu-item {
   font-size: 16px;

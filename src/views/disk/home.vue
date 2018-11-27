@@ -21,7 +21,7 @@
     </v-contextmenu>
 
     <div class="nav">
-      <el-popover placement="bottom" width="300" trigger="click">
+      <el-popover placement="bottom" width="300" trigger="hover">
         <div class="uploaditem">
           <i class="fas fa-plus"></i>
           <span style="margin-left:10px;">文件夹</span>
@@ -195,6 +195,7 @@ export default {
       this.breadList.push(bread);
     },
     getContent(val) {
+      this.tableData = new Array;
       let _this = this;
       axion.getContent(val).then(d => {
         if (d.data.returnCode != 200) {
@@ -248,6 +249,7 @@ export default {
           .saveFileToContent({
             fileId: fileId,
             rootPath: this.rootPath,
+            directoryId: this.breadList[this.breadList.length - 1].id,
             fileName: file.name,
             totalSize: file.size,
             directory: file.isFolder,
@@ -258,6 +260,7 @@ export default {
               this.$message(d.data.returnData);
             }
             this.$message("success");
+            this.getContent(this.breadList[this.breadList.length - 1].id);
           });
       }
     },
@@ -381,6 +384,23 @@ export default {
   overflow: auto;
   overflow-x: hidden;
   overflow-y: auto;
+}
+.text {
+  font-size: 14px;
+}
+.item {
+  margin-bottom: 18px;
+}
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+.clearfix:after {
+  clear: both
+}
+.box-card {
+  /* width: 480px; */
 }
 </style>
 

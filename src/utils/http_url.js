@@ -52,7 +52,7 @@ const valid = (username) => get('/login/valid?username=' + username)
 /*验证登陆状态*/
 const validAuth = () => get('/require_auth')
 /*保存文件至文件目录中*/
-const saveFileToContent = (fileId, fileName, totalSize, rootPath, directory, fileType) => post('/fileContent/saveFileToContent', fileId, fileName, totalSize, rootPath, directory, fileType)
+const saveFileToContent = (fileId, fileName, totalSize, rootPath, directoryId, directory, fileType) => post('/fileContent/saveFileToContent', fileId, fileName, totalSize, rootPath, directoryId, directory, fileType)
 /*获取文件目录*/
 const getContent = (parentId) => get('/content/getContent?parentId=' + parentId)
 export default {

@@ -11,7 +11,7 @@
     <uploader-list></uploader-list>
   </uploader>
   <el-button id="btn">qwe</el-button>
-  <el-popover placement="bottom" width="400" trigger="click">
+  <el-popover placement="bottom" width="400" trigger="hover">
   <div class="uploaditem"><i class="fas fa-plus"></i><span style="margin-left:10px;">文件夹</span></div>
   <hr style="border:1 dashed" color=#f0f1f3 SIZE=1/>
   <div class="uploaditem" id="upload-file"><i class="fas fa-file-upload"></i><span style="margin-left:10px;">上传文件</span></div>
@@ -49,7 +49,7 @@ export default {
         // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
         target: "http://localhost:12315/upload",
         testChunks: true,
-        chunkSize: 64 * 1024 * 1024,
+        chunkSize: 10 * 1024 * 1024,
         preprocess: _this.preprocess,
         simultaneousUploads: 1,
         query: function(file) {
@@ -94,6 +94,7 @@ export default {
           .saveFileToContent({
             fileId: fileId,
             rootPath: this.rootPath,
+            directoryId: 0,
             fileName: file.name,
             totalSize: file.size,
             directory: file.isFolder,

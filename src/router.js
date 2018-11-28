@@ -131,6 +131,7 @@ const adminRoutes = [{
 
 const routes = [...mainRoutes, ...adminRoutes]
 var router = new Router({
+  mode: 'history',
   routes
 })
 
@@ -151,6 +152,3 @@ router.beforeEach((to, from, next) => {
 
 
 export default router;
-export {
-  sideRoutes
-}

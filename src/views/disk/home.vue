@@ -59,6 +59,7 @@
       </el-breadcrumb>
 
       <el-table
+        id="table"
         v-contextmenu:contextmenu
         :max-height="tableHeight"
         :data="tableData"
@@ -183,6 +184,7 @@ export default {
     },
     init() {
       let _this = this;
+      document.getElementById("table").addEventListener('scroll', this.changeContextMenu, true)//scrElement.target.offsetTop
       let uploaderInstance = this.$refs.uploader.uploader;
       uploaderInstance.on("fileSuccess", this.saveFileToContent);
       uploaderInstance.on("fileAdded", function(file, event) {
@@ -221,6 +223,9 @@ export default {
       bread.id = 0;
       bread.name = "首页";
       this.breadList.push(bread);
+    },
+    changeContextMenu(e){
+      console.log(e.srcElement.offsetTop);
     },
     getContent(val) {
       this.tableData = new Array();

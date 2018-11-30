@@ -60,12 +60,13 @@
 
       <el-table
         v-contextmenu:contextmenu
-        :height="tableHeight"
+        :max-height="tableHeight"
         :data="tableData"
         ref="multipleTable"
         style="width: 100%"
         @selection-change="handleSelectionChange"
         @row-contextmenu="clickTd"
+        @header-contextmenu="clickTh"
       >
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column label="文件" min-width="500">
@@ -338,9 +339,11 @@ export default {
       this.toggleSelection(row);
       // console.log(row, event); //获取各行id的值
     },
-    // clickTh(row, event) {
-    //   window.event ? (window.event.cancelBubble = true) : e.stopPropagation(); //阻止表头触发右键菜单栏
-    // },
+    clickTh(row, event) {
+      // window.event ? (window.event.cancelBubble = true) : e.stopPropagation(); //阻止表头触发右键菜单栏
+      this.$refs.multipleTable.clearSelection();
+      this.menuType = false;
+    },
     handleClick(vm, event) {
       console.log(vm, event);
     },

@@ -1,0 +1,113 @@
+.uploaditem{
+  cursor:pointer;
+  font-size:15px;
+  height:30px;
+  line-height:30px;
+  padding: 0 20px;
+}
+.uploaditem:hover{
+  background-color: #f0f1f3;
+}
+.button {
+  padding: 0 24px;
+  margin-right: 10px;
+}
+.el-input {
+  float: right;
+  width: 200px;
+}
+#sort {
+  float: right;
+  color: #000;
+}
+.body {
+  margin-top: 20px;
+}
+.uploadField {
+  background-color: blueviolet;
+  width: 614px;
+  position: absolute;
+  right: 50px;
+  bottom: 50px;
+  z-index: 20;
+}
+.uploader-example {
+  font-size: 12px;
+  min-height: 300px;
+  max-height: 445px;
+}
+.uploader-example .uploader-btn {
+  margin-right: 4px;
+}
+.uploader-example .uploader-list {
+  max-height: 374px;
+  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.text {
+  font-size: 14px;
+}
+.item {
+  margin-bottom: 18px;
+}
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+.clearfix:after {
+  clear: both
+}
+.folder{
+  color: #606266;
+  cursor: pointer;
+}
+.folder:hover{
+  text-decoration:underline;
+}
+.folderType{
+  width: 32px;
+  height: 24px;
+  background: url(../../assets/small-folder.png);
+}
+.file{
+  color: #606266;
+  cursor: pointer;
+}
+.file:hover{
+  text-decoration:underline;
+}
+.pdf{
+  background: url(../../assets/small-pdf.png);
+}
+.xls{
+  background: url(../../assets/small-excel.png);
+}
+.exe{
+  background: url(../../assets/small-exe.png);
+}
+.doc{
+  background: url(../../assets/small-word.png);
+}
+.ppt{
+  background: url(../../assets/small-ppt.png);
+}
+.video{
+  background: url(../../assets/small-video.png);
+}
+.music{
+  background: url(../../assets/small-music.png);
+}
+.image{
+  background: url(../../assets/small-image.png);
+}
+.zip{
+  background: url(../../assets/small-zip.png);
+}
+.text{
+  background: url(../../assets/small-document.png);
+}
+.unknown{
+  background: url(../../assets/small-file.png);
+}

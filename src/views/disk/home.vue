@@ -35,7 +35,7 @@
           <i class="fas fa-folder-plus"></i>
           <span style="margin-left:7px;">上传文件夹</span>
         </div>
-        <el-button type="primary" icon="fas fa-plus-square" slot="reference">新建</el-button>
+        <el-button type="primary" icon="fas fa-plus" slot="reference">新建</el-button>
       </el-popover>
       <el-button id="sort">
         <i class="fas fa-sort-amount-down"></i>
@@ -65,7 +65,7 @@
           <template slot-scope="scope">
             <div>
               <div v-if="scope.row.isFolder" class="folderType"></div>
-              <div style="width:18px;height: 24px;" v-else :class="scope.row.fileType"></div>      
+              <div style="width:18px;height: 24px;" v-else :class="scope.row.fileType"></div>
             </div>
             <span
               class="folder"
@@ -92,11 +92,7 @@
       <el-card class="box-card" body-style="padding: 0;">
         <div slot="header" class="clearfix">
           <span>上传</span>
-          <el-button
-            style="float: right; padding: 5px 0"
-            type="text"
-            @click="uploadshow = false;"
-          >
+          <el-button style="float: right; padding: 5px 0" type="text" @click="uploadshow = false;">
             <i class="fas fa-times"></i>
           </el-button>
           <el-button
@@ -126,7 +122,7 @@ export default {
     return {
       mini: true,
       uploadshow: false,
-      uploadMain:true,
+      uploadMain: true,
       menuShow: false,
       tableHeight: window.innerHeight - 180,
       input: "",
@@ -187,8 +183,18 @@ export default {
           return true;
         });
       });
-      uploaderInstance.assignBrowse(document.getElementById('upload-file'), false, false, {});
-      uploaderInstance.assignBrowse(document.getElementById('upload-folder'), true, true, {});
+      uploaderInstance.assignBrowse(
+        document.getElementById("upload-file"),
+        false,
+        false,
+        {}
+      );
+      uploaderInstance.assignBrowse(
+        document.getElementById("upload-folder"),
+        true,
+        true,
+        {}
+      );
       this.getContent(0);
       let bread = {};
       bread.id = 0;
@@ -196,7 +202,7 @@ export default {
       this.breadList.push(bread);
     },
     getContent(val) {
-      this.tableData = new Array;
+      this.tableData = new Array();
       let _this = this;
       axion.getContent(val).then(d => {
         if (d.data.returnCode != 200) {
@@ -339,116 +345,11 @@ export default {
 </script>
 
 <style scoped>
-.uploaditem{
-  cursor:pointer;
-  font-size:15px;
-  height:30px;
-  line-height:30px;
-  padding: 0 20px;
-}
-.uploaditem:hover{
-  background-color: #f0f1f3;
-}
-.button {
-  padding: 0 24px;
-  margin-right: 10px;
-}
-.el-input {
-  float: right;
-  width: 200px;
-}
-#sort {
-  float: right;
-  color: #000;
-}
-.body {
-  margin-top: 20px;
-}
-.uploadField {
-  background-color: blueviolet;
-  width: 614px;
-  position: absolute;
-  right: 50px;
-  bottom: 50px;
-  z-index: 20;
-}
-.uploader-example {
-  font-size: 12px;
-  min-height: 300px;
-  max-height: 445px;
-}
-.uploader-example .uploader-btn {
-  margin-right: 4px;
-}
-.uploader-example .uploader-list {
-  max-height: 374px;
-  overflow: auto;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-.text {
-  font-size: 14px;
-}
-.item {
-  margin-bottom: 18px;
-}
-.clearfix:before,
-.clearfix:after {
-  display: table;
-  content: "";
-}
-.clearfix:after {
-  clear: both
-}
-.folder{
-  color: #606266;
-  cursor: pointer;
-}
-.folder:hover{
-  text-decoration:underline;
-}
-.folderType{
-  width: 30px;
-  height: 24px;
-  background: url(../../assets/small-folder.png);
-}
-.pdf{
-  background: url(../../assets/small-pdf.png);
-}
-.xls{
-  background: url(../../assets/small-excel.png);
-}
-.exe{
-  background: url(../../assets/small-exe.png);
-}
-.doc{
-  background: url(../../assets/small-word.png);
-}
-.ppt{
-  background: url(../../assets/small-ppt.png);
-}
-.video{
-  background: url(../../assets/small-video.png);
-}
-.music{
-  background: url(../../assets/small-music.png);
-}
-.image{
-  background: url(../../assets/small-image.png);
-}
-.zip{
-  background: url(../../assets/small-zip.png);
-}
-.text{
-  background: url(../../assets/small-document.png);
-}
-.unknown{
-  background: url(../../assets/small-file.png);
-}
+@import "../../plugins/css/home.css";
 </style>
 
 <style>
-.cell{
+.cell {
   display: flex !important;
 }
 .uploader-file-icon::before {

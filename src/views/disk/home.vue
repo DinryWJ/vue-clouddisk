@@ -1,6 +1,7 @@
 <template>
   <div>
-    <v-contextmenu ref="contextmenu" :theme="theme" @show="show" @hide="hide">
+    <v-contextmenu ref="contextmenu" :theme="theme" @show="show" @hide="hide" style="width:150px">
+      <div v-show="menuType">
       <v-contextmenu-item @click="handleClick" :disabled="multiDisabled">打开</v-contextmenu-item>
       <v-contextmenu-item @click="handleClick">下载</v-contextmenu-item>
 
@@ -18,6 +19,13 @@
 
       <v-contextmenu-item @click="handleClick" :disabled="multiDisabled">重命名</v-contextmenu-item>
       <v-contextmenu-item @click="handleClick">删除</v-contextmenu-item>
+      </div>
+      <div v-show="!menuType">
+        <v-contextmenu-item ><i class="fas fa-plus"></i><span style="margin-left:10px;">文件夹</span></v-contextmenu-item>
+        <v-contextmenu-item divider></v-contextmenu-item>
+        <v-contextmenu-item id="click-upload-file"><i class="fas fa-file-upload"></i><span style="margin-left:10px;">上传文件</span></v-contextmenu-item>
+        <v-contextmenu-item id="click-upload-folder"><i class="fas fa-folder-plus"></i><span style="margin-left:7px;">上传文件夹</span></v-contextmenu-item>
+      </div>
     </v-contextmenu>
 
     <div class="nav">
@@ -58,7 +66,6 @@
         style="width: 100%"
         @selection-change="handleSelectionChange"
         @row-contextmenu="clickTd"
-        @header-contextmenu="clickTh"
       >
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column label="文件" min-width="500">
@@ -124,6 +131,7 @@ export default {
       uploadshow: false,
       uploadMain: true,
       menuShow: false,
+      menuType: false,
       tableHeight: window.innerHeight - 180,
       input: "",
       multiDisabled: true,
@@ -191,6 +199,18 @@ export default {
       );
       uploaderInstance.assignBrowse(
         document.getElementById("upload-folder"),
+        true,
+        true,
+        {}
+      );
+      uploaderInstance.assignBrowse(
+        document.getElementById("click-upload-file"),
+        false,
+        false,
+        {}
+      );
+      uploaderInstance.assignBrowse(
+        document.getElementById("click-upload-folder"),
         true,
         true,
         {}
@@ -292,6 +312,7 @@ export default {
       console.log(index, row);
     },
     toggleSelection(row) {
+      console.log('toggle');
       let flag = false;
       for (let i = 0; i < this.multipleSelection.length; i++) {
         if (this.multipleSelection[i].id == row["id"]) {
@@ -310,15 +331,16 @@ export default {
       if (row) {
         this.$refs.multipleTable.toggleRowSelection(row, true);
       }
+      this.show();
     },
     clickTd(row, event) {
       console.log(row["id"]); //跟下面效果一样
       this.toggleSelection(row);
       // console.log(row, event); //获取各行id的值
     },
-    clickTh(row, event) {
-      window.event ? (window.event.cancelBubble = true) : e.stopPropagation(); //阻止表头触发右键菜单栏
-    },
+    // clickTh(row, event) {
+    //   window.event ? (window.event.cancelBubble = true) : e.stopPropagation(); //阻止表头触发右键菜单栏
+    // },
     handleClick(vm, event) {
       console.log(vm, event);
     },
@@ -330,6 +352,11 @@ export default {
     },
     show() {
       console.log("menu show");
+      if(this.multipleSelection.length==0){
+        this.menuType = false;
+      }else{
+        this.menuType = true;
+      }
       this.menuShow = true;
     },
     hide() {

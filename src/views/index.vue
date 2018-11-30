@@ -44,7 +44,11 @@ export default {
       icon: logo
     };
   },
-  mounted() {},
+  mounted() {
+    document.oncontextmenu = function(){
+    　　return false;
+    }
+  },
   methods: {
     handleCommand(command) {}
   }

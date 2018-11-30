@@ -63,14 +63,17 @@
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column label="文件" min-width="500">
           <template slot-scope="scope">
-            <i class="fas fa-folder fa-2x"></i>
-            <el-button
+            <div>
+              <div v-if="scope.row.isFolder" class="folderType"></div>
+              <div style="width:18px;height: 24px;" v-else :class="scope.row.fileType"></div>      
+            </div>
+            <span
+              class="folder"
               v-if="scope.row.isFolder"
-              type="text"
               style="margin-left:10px;"
               @click="openFolder(scope.$index,scope.row.id)"
-            >{{ scope.row.name }}</el-button>
-            <span v-else style="margin-left:10px;">{{ scope.row.name }}</span>
+            >{{ scope.row.name }}</span>
+            <span class="file" v-else style="margin-left:10px;">{{ scope.row.name }}</span>
           </template>
         </el-table-column>
         <el-table-column label="大小" width="180">
@@ -397,12 +400,57 @@ export default {
 .clearfix:after {
   clear: both
 }
-.box-card {
-  /* width: 480px; */
+.folder{
+  color: #606266;
+  cursor: pointer;
+}
+.folder:hover{
+  text-decoration:underline;
+}
+.folderType{
+  width: 30px;
+  height: 24px;
+  background: url(../../assets/small-folder.png);
+}
+.pdf{
+  background: url(../../assets/small-pdf.png);
+}
+.xls{
+  background: url(../../assets/small-excel.png);
+}
+.exe{
+  background: url(../../assets/small-exe.png);
+}
+.doc{
+  background: url(../../assets/small-word.png);
+}
+.ppt{
+  background: url(../../assets/small-ppt.png);
+}
+.video{
+  background: url(../../assets/small-video.png);
+}
+.music{
+  background: url(../../assets/small-music.png);
+}
+.image{
+  background: url(../../assets/small-image.png);
+}
+.zip{
+  background: url(../../assets/small-zip.png);
+}
+.text{
+  background: url(../../assets/small-document.png);
+}
+.unknown{
+  background: url(../../assets/small-file.png);
 }
 </style>
 
 <style>
+.cell{
+  display: flex !important;
+}
 .uploader-file-icon::before {
   content: url(../../assets/small-file.png) !important;
   display: block;

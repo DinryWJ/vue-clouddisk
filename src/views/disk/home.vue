@@ -85,36 +85,34 @@
         </el-table-column>
       </el-table>
     </div>
-    <transition name="fade">
-      <div class="uploadField" v-show="uploadshow">
-        <el-card class="box-card" body-style="padding: 0;">
-          <div slot="header" class="clearfix">
-            <span>上传</span>
-            <el-button
-              style="float: right; padding: 5px 0"
-              type="text"
-              @click="uploadshow = false;"
-            >
-              <i class="fas fa-times"></i>
-            </el-button>
-            <el-button
-              style="float: right; padding: 5px 0;margin-right:5px;"
-              type="text"
-              @click="minimize"
-            >
-              <i class="far fa-window-minimize" v-if="mini"></i>
-              <i v-else class="far fa-window-maximize"></i>
-            </el-button>
-          </div>
-          <div v-show="uploadMain">
-            <uploader :options="options" class="uploader-example" ref="uploader">
-              <uploader-unsupport></uploader-unsupport>
-              <uploader-list></uploader-list>
-            </uploader>
-          </div>
-        </el-card>
-      </div>
-    </transition>
+    <div class="uploadField" v-show="uploadshow">
+      <el-card class="box-card" body-style="padding: 0;">
+        <div slot="header" class="clearfix">
+          <span>上传</span>
+          <el-button
+            style="float: right; padding: 5px 0"
+            type="text"
+            @click="uploadshow = false;"
+          >
+            <i class="fas fa-times"></i>
+          </el-button>
+          <el-button
+            style="float: right; padding: 5px 0;margin-right:5px;"
+            type="text"
+            @click="minimize"
+          >
+            <i class="far fa-window-minimize" v-if="mini"></i>
+            <i v-else class="far fa-window-maximize"></i>
+          </el-button>
+        </div>
+        <div v-show="uploadMain">
+          <uploader :options="options" class="uploader-example" ref="uploader">
+            <uploader-unsupport></uploader-unsupport>
+            <uploader-list></uploader-list>
+          </uploader>
+        </div>
+      </el-card>
+    </div>
   </div>
 </template>
 <script>

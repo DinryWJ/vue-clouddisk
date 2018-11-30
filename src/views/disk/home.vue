@@ -43,7 +43,7 @@
           <i class="fas fa-folder-plus"></i>
           <span style="margin-left:7px;">上传文件夹</span>
         </div>
-        <el-button type="primary" icon="fas fa-plus" slot="reference">新建</el-button>
+        <el-button type="primary" icon="fas fa-plus" slot="reference"> 新建</el-button>
       </el-popover>
       <el-button id="sort">
         <i class="fas fa-sort-amount-down"></i>

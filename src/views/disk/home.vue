@@ -279,6 +279,7 @@ export default {
             rootPath: this.rootPath,
             directoryId: this.breadList[this.breadList.length - 1].id,
             fileName: file.name,
+            relativePath:file.relativePath,
             totalSize: file.size,
             directory: file.isFolder,
             fileType: file.fileType

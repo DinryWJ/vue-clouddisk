@@ -49,7 +49,7 @@ export default {
         // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
         target: "http://localhost:12315/upload",
         testChunks: true,
-        chunkSize: 10 * 1024 * 1024,
+        chunkSize: 1 * 1024 * 1024,
         preprocess: _this.preprocess,
         simultaneousUploads: 1,
         query: function(file) {

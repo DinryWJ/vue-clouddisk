@@ -54,17 +54,16 @@
     <div class="body">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item v-for="bread in breadList" v-bind:key="bread.id">
-          <el-button type="text" @click="backFolder(bread.id)">{{bread.name}}</el-button>
+          <el-button type="text" style="padding: 0;" @click="backFolder(bread.id)">{{bread.name}}</el-button>
         </el-breadcrumb-item>
       </el-breadcrumb>
 
       <el-table
-        id="table"
         v-contextmenu:contextmenu
         :max-height="tableHeight"
         :data="tableData"
         ref="multipleTable"
-        style="width: 100%"
+        style="width: 100%;font-size:12px;"
         @selection-change="handleSelectionChange"
         @row-contextmenu="clickTd"
         @header-contextmenu="clickTh"
@@ -90,7 +89,7 @@
             <span>{{ scope.row.size }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="修改时间" width="180">
+        <el-table-column label="修改时间" width="300">
           <template slot-scope="scope">
             <span>{{ scope.row.date }}</span>
           </template>
@@ -184,7 +183,6 @@ export default {
     },
     init() {
       let _this = this;
-      document.getElementById("table").addEventListener('scroll', this.changeContextMenu, true)//scrElement.target.offsetTop
       let uploaderInstance = this.$refs.uploader.uploader;
       uploaderInstance.on("fileSuccess", this.saveFileToContent);
       uploaderInstance.on("fileAdded", function(file, event) {
@@ -223,9 +221,6 @@ export default {
       bread.id = 0;
       bread.name = "首页";
       this.breadList.push(bread);
-    },
-    changeContextMenu(e){
-      console.log(e.srcElement.offsetTop);
     },
     getContent(val) {
       this.tableData = new Array();

@@ -2,29 +2,38 @@
   <div>
     <v-contextmenu ref="contextmenu" :theme="theme" @show="show" @hide="hide" style="width:150px">
       <div v-show="menuType">
-      <v-contextmenu-item @click="handleClick" :disabled="multiDisabled">打开</v-contextmenu-item>
-      <v-contextmenu-item @click="handleClick">下载</v-contextmenu-item>
+        <v-contextmenu-item @click="handleClick" :disabled="multiDisabled">打开</v-contextmenu-item>
+        <v-contextmenu-item @click="handleClick">下载</v-contextmenu-item>
 
-      <v-contextmenu-item divider></v-contextmenu-item>
+        <v-contextmenu-item divider></v-contextmenu-item>
 
-      <v-contextmenu-item @click="handleClick">分享</v-contextmenu-item>
-      <v-contextmenu-item @click="handleClick">设置共享</v-contextmenu-item>
+        <v-contextmenu-item @click="handleClick">分享</v-contextmenu-item>
+        <v-contextmenu-item @click="handleClick">设置共享</v-contextmenu-item>
 
-      <v-contextmenu-item divider></v-contextmenu-item>
+        <v-contextmenu-item divider></v-contextmenu-item>
 
-      <v-contextmenu-item @click="handleClick">移动到...</v-contextmenu-item>
-      <v-contextmenu-item @click="handleClick">复制到...</v-contextmenu-item>
+        <v-contextmenu-item @click="handleClick">移动到...</v-contextmenu-item>
+        <v-contextmenu-item @click="handleClick">复制到...</v-contextmenu-item>
 
-      <v-contextmenu-item divider></v-contextmenu-item>
+        <v-contextmenu-item divider></v-contextmenu-item>
 
-      <v-contextmenu-item @click="handleClick" :disabled="multiDisabled">重命名</v-contextmenu-item>
-      <v-contextmenu-item @click="handleClick">删除</v-contextmenu-item>
+        <v-contextmenu-item @click="handleClick" :disabled="multiDisabled">重命名</v-contextmenu-item>
+        <v-contextmenu-item @click="handleClick">删除</v-contextmenu-item>
       </div>
       <div v-show="!menuType">
-        <v-contextmenu-item ><i class="fas fa-plus"></i><span style="margin-left:10px;">文件夹</span></v-contextmenu-item>
+        <v-contextmenu-item>
+          <i class="fas fa-plus"></i>
+          <span style="margin-left:10px;">文件夹</span>
+        </v-contextmenu-item>
         <v-contextmenu-item divider></v-contextmenu-item>
-        <v-contextmenu-item id="click-upload-file"><i class="fas fa-file-upload"></i><span style="margin-left:10px;">上传文件</span></v-contextmenu-item>
-        <v-contextmenu-item id="click-upload-folder"><i class="fas fa-folder-plus"></i><span style="margin-left:7px;">上传文件夹</span></v-contextmenu-item>
+        <v-contextmenu-item id="click-upload-file">
+          <i class="fas fa-file-upload"></i>
+          <span style="margin-left:10px;">上传文件</span>
+        </v-contextmenu-item>
+        <v-contextmenu-item id="click-upload-folder">
+          <i class="fas fa-folder-plus"></i>
+          <span style="margin-left:7px;">上传文件夹</span>
+        </v-contextmenu-item>
       </div>
     </v-contextmenu>
 
@@ -43,7 +52,7 @@
           <i class="fas fa-folder-plus"></i>
           <span style="margin-left:7px;">上传文件夹</span>
         </div>
-        <el-button type="primary" icon="fas fa-plus" slot="reference"> 新建</el-button>
+        <el-button type="primary" icon="fas fa-plus" slot="reference">新建</el-button>
       </el-popover>
       <el-button id="sort">
         <i class="fas fa-sort-amount-down"></i>
@@ -181,16 +190,10 @@ export default {
     init() {
       let _this = this;
       let uploaderInstance = this.$refs.uploader.uploader;
-      uploaderInstance.on("fileComplete",this.fileComplete)
+      uploaderInstance.on("fileComplete", this.fileComplete);
       uploaderInstance.on("fileSuccess", this.saveFileToContent);
-      uploaderInstance.on("fileAdded", function(file, event) {
-        axion.validAuth().then(d => {
-          _this.uploadshow = true;
-          _this.uploadMain = true;
-          return true;
-        });
-      });
-      uploaderInstance.on("fileError",this.fileError);
+      uploaderInstance.on("filesAdded", this.filesAdded);
+      uploaderInstance.on("fileError", this.fileError);
       uploaderInstance.assignBrowse(
         document.getElementById("upload-file"),
         false,
@@ -278,7 +281,7 @@ export default {
             rootPath: this.rootPath,
             directoryId: this.breadList[this.breadList.length - 1].id,
             fileName: file.name,
-            relativePath:file.relativePath,
+            relativePath: file.relativePath,
             totalSize: file.size,
             directory: file.isFolder,
             fileType: file.fileType
@@ -287,25 +290,43 @@ export default {
             if (d.data.returnCode != 200) {
               this.$message(d.data.returnData);
             }
-            if(rootFile.isFolder == false){
-              this.$message("success");          
+            if (rootFile.isFolder == false) {
+              this.$message("success");
               this.getContent(this.breadList[this.breadList.length - 1].id);
             }
           });
       }
     },
-    fileComplete(rootFile){
-      if(rootFile.isFolder == true){
-        this.$message("success");          
+    fileComplete(rootFile) {
+      if (rootFile.isFolder == true) {
+        this.$message("success");
         this.getContent(this.breadList[this.breadList.length - 1].id);
       }
     },
-    fileError(rootFile, file, message, chunk){
-      this.$notify({
-          title: '文件上传错误:'+file.name,
-          duration: 0,
-          message: JSON.parse(message).returnType
+    filesAdded(files) {
+      if (files.length >= 300) {
+        this.$refs.uploader.uploader.cancel();
+        this.$notify({
+          title: "文件夹上传错误",
+          type:'error',
+          message: "文件数量过大，建议压缩后上传"
         });
+        return false;
+      }else{
+        axion.validAuth().then(d => {
+          this.uploadshow = true;
+          this.uploadMain = true;
+          return true;
+        });
+      }
+    },
+    fileError(rootFile, file, message, chunk) {
+      this.$notify({
+        title: "文件上传错误:" + file.name,
+        duration: 0,
+        type:'error',
+        message: JSON.parse(message).returnType
+      });
     },
     preprocess(chunk) {
       let uploaderInstance = this.$refs.uploader.uploader;
@@ -328,7 +349,7 @@ export default {
       console.log(index, row);
     },
     toggleSelection(row) {
-      console.log('toggle');
+      console.log("toggle");
       let flag = false;
       for (let i = 0; i < this.multipleSelection.length; i++) {
         if (this.multipleSelection[i].id == row["id"]) {
@@ -370,9 +391,9 @@ export default {
     },
     show() {
       console.log("menu show");
-      if(this.multipleSelection.length==0){
+      if (this.multipleSelection.length == 0) {
         this.menuType = false;
-      }else{
+      } else {
         this.menuType = true;
       }
       this.menuShow = true;

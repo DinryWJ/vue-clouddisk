@@ -138,9 +138,6 @@ export default {
       multiDisabled: true,
       rootPath: "/",
       options: {},
-      attrs: {
-        accept: "image/*"
-      },
       breadList: [],
       tableData: [],
       multipleSelection: []
@@ -184,6 +181,7 @@ export default {
     init() {
       let _this = this;
       let uploaderInstance = this.$refs.uploader.uploader;
+      uploaderInstance.on("fileComplete",this.fileComplete)
       uploaderInstance.on("fileSuccess", this.saveFileToContent);
       uploaderInstance.on("fileAdded", function(file, event) {
         axion.validAuth().then(d => {
@@ -192,6 +190,7 @@ export default {
           return true;
         });
       });
+      uploaderInstance.on("fileError",this.fileError);
       uploaderInstance.assignBrowse(
         document.getElementById("upload-file"),
         false,
@@ -288,10 +287,25 @@ export default {
             if (d.data.returnCode != 200) {
               this.$message(d.data.returnData);
             }
-            this.$message("success");
-            this.getContent(this.breadList[this.breadList.length - 1].id);
+            if(rootFile.isFolder == false){
+              this.$message("success");          
+              this.getContent(this.breadList[this.breadList.length - 1].id);
+            }
           });
       }
+    },
+    fileComplete(rootFile){
+      if(rootFile.isFolder == true){
+        this.$message("success");          
+        this.getContent(this.breadList[this.breadList.length - 1].id);
+      }
+    },
+    fileError(rootFile, file, message, chunk){
+      this.$notify({
+          title: '文件上传错误:'+file.name,
+          duration: 0,
+          message: JSON.parse(message).returnType
+        });
     },
     preprocess(chunk) {
       let uploaderInstance = this.$refs.uploader.uploader;

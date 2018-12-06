@@ -54,10 +54,10 @@
         </div>
         <el-button type="primary" icon="fas fa-plus" slot="reference">新建</el-button>
       </el-popover>
-      <el-button id="sort">
+      <el-button id="sort" class="hidden-sm-and-down">
         <i class="fas fa-sort-amount-down"></i>
       </el-button>
-      <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="input"></el-input>
+      <el-input class="hidden-sm-and-down" placeholder="请输入内容" suffix-icon="el-icon-search" v-model="input"></el-input>
     </div>
 
     <div class="body">
@@ -78,7 +78,7 @@
         @header-contextmenu="clickTh"
       >
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column label="文件" min-width="500">
+        <el-table-column label="文件" min-width="300">
           <template slot-scope="scope">
             <div>
               <div v-if="scope.row.isFolder" class="folderType"></div>
@@ -90,7 +90,7 @@
               style="margin-left:10px;"
               @click="openFolder(scope.$index,scope.row.id)"
             >{{ scope.row.name }}</span>
-            <span class="file" v-else style="margin-left:10px;">{{ scope.row.name }}</span>
+            <span class="file" v-else style="margin-left:10px;" @click="openFile(scope.row.id,scope.row.name)">{{ scope.row.name }}</span>
           </template>
         </el-table-column>
         <el-table-column label="大小" width="180">
@@ -133,6 +133,7 @@
 </template>
 <script>
 import axion from "@/utils/http_url.js"; //接口文件
+import 'element-ui/lib/theme-chalk/display.css';
 import { fileMd5HeadTailTime } from "../../utils/md5.js";
 export default {
   data() {
@@ -260,6 +261,22 @@ export default {
       this.breadList.push(bread);
       this.tableData = new Array();
       this.getContent(val);
+    },
+    openFile(id,name){
+      // const { href } = this.$router.resolve({
+      //   name: "page",
+      //   params: {
+      //     id: id
+      //   }
+      // });
+      // window.open(href, "_blank");
+      this.$router.push({
+        name:'page',
+        params:{
+          id:id,
+          name:name
+        }
+      })
     },
     backFolder(id) {
       let flag = false;

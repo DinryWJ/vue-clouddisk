@@ -12,16 +12,16 @@
             text-color="#000"
             mode="horizontal">
 
-            <el-menu-item index="/disk/home" class="menu-item">
+            <el-menu-item index="/disk/home" class="menu-item hidden-sm-and-down">
               <span>网盘</span>
             </el-menu-item>
-            <el-menu-item index="/share" class="menu-item">
+            <el-menu-item index="/share" class="menu-item hidden-sm-and-down">
               <span>分享</span>
             </el-menu-item>
-            <el-menu-item index="/explore" class="menu-item">
+            <el-menu-item index="/explore" class="menu-item hidden-sm-and-down">
               <span>找资源</span>
             </el-menu-item>
-            <el-menu-item index="/more" id="buttom" class="menu-item">
+            <el-menu-item index="/more" id="buttom" class="menu-item hidden-sm-and-down">
               <span>更多</span>
             </el-menu-item>
             <el-submenu index="" style="float:right;" class="menu-item">

@@ -79,36 +79,42 @@ const mainRoutes = [{
       component: () =>
         import('./views/disk/about.vue')
     }]
-  }, {
-    path: '/share',
-    name: "share",
-    meta: {
-      title: "分享",
-      requireAuth: true
-    },
-    component: () =>
-      import('./views/base/share.vue')
-  }, {
-    path: '/explore',
-    name: "explore",
-    meta: {
-      title: "探索",
-      requireAuth: true
-    },
-    component: () =>
-      import('./views/base/explore.vue')
-  }, {
-    path: '/more',
-    name: "more",
-    meta: {
-      title: "更多",
-      requireAuth: true
-    },
-    component: () =>
-      import('./views/base/more.vue')
-
-
-
+}, {
+  path: '/share',
+  name: "share",
+  meta: {
+    title: "分享",
+    requireAuth: true
+  },
+  component: () =>
+    import('./views/base/share.vue')
+}, {
+  path: '/explore',
+  name: "explore",
+  meta: {
+    title: "探索",
+    requireAuth: true
+  },
+  component: () =>
+    import('./views/base/explore.vue')
+}, {
+  path: '/more',
+  name: "more",
+  meta: {
+    title: "更多",
+    requireAuth: true
+  },
+  component: () =>
+    import('./views/base/more.vue')
+},{
+  path: '/page/:name',
+  name: "page",
+  meta: {
+    title: "文件",
+    requireAuth: true
+  },
+  component: () =>
+    import('./views/disk/page.vue')
 
 
   }]
@@ -145,7 +151,7 @@ router.beforeEach((to, from, next) => {
         query: { redirect: to.fullPath }
       })
     }
-  }else{
+  } else {
     next();
   }
 })

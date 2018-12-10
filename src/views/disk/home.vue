@@ -18,7 +18,7 @@
         <v-contextmenu-item divider></v-contextmenu-item>
 
         <v-contextmenu-item @click="handleClick" :disabled="multiDisabled">重命名</v-contextmenu-item>
-        <v-contextmenu-item @click="handleClick">删除</v-contextmenu-item>
+        <v-contextmenu-item @click="handledelete">删除</v-contextmenu-item>
       </div>
       <div v-show="!menuType">
         <v-contextmenu-item>
@@ -57,7 +57,12 @@
       <el-button id="sort" class="hidden-sm-and-down">
         <i class="fas fa-sort-amount-down"></i>
       </el-button>
-      <el-input class="hidden-sm-and-down" placeholder="请输入内容" suffix-icon="el-icon-search" v-model="input"></el-input>
+      <el-input
+        class="hidden-sm-and-down"
+        placeholder="请输入内容"
+        suffix-icon="el-icon-search"
+        v-model="input"
+      ></el-input>
     </div>
 
     <div class="body">
@@ -90,7 +95,12 @@
               style="margin-left:10px;"
               @click="openFolder(scope.$index,scope.row.id)"
             >{{ scope.row.name }}</span>
-            <span class="file" v-else style="margin-left:10px;" @click="openFile(scope.row.id,scope.row.name)">{{ scope.row.name }}</span>
+            <span
+              class="file"
+              v-else
+              style="margin-left:10px;"
+              @click="openFile(scope.row.id,scope.row.name)"
+            >{{ scope.row.name }}</span>
           </template>
         </el-table-column>
         <el-table-column label="大小" width="180">
@@ -133,7 +143,7 @@
 </template>
 <script>
 import axion from "@/utils/http_url.js"; //接口文件
-import 'element-ui/lib/theme-chalk/display.css';
+import "element-ui/lib/theme-chalk/display.css";
 import { fileMd5HeadTailTime } from "../../utils/md5.js";
 export default {
   data() {
@@ -262,7 +272,7 @@ export default {
       this.tableData = new Array();
       this.getContent(val);
     },
-    openFile(id,name){
+    openFile(id, name) {
       // const { href } = this.$router.resolve({
       //   name: "page",
       //   params: {
@@ -271,12 +281,12 @@ export default {
       // });
       // window.open(href, "_blank");
       this.$router.push({
-        name:'page',
-        params:{
-          id:id,
-          name:name
+        name: "page",
+        params: {
+          id: id,
+          name: name
         }
-      })
+      });
     },
     backFolder(id) {
       let flag = false;
@@ -325,11 +335,11 @@ export default {
         this.$refs.uploader.uploader.cancel();
         this.$notify({
           title: "文件夹上传错误",
-          type:'error',
+          type: "error",
           message: "文件数量过大，建议压缩后上传"
         });
         return false;
-      }else{
+      } else {
         axion.validAuth().then(d => {
           this.uploadshow = true;
           this.uploadMain = true;
@@ -341,7 +351,7 @@ export default {
       this.$notify({
         title: "文件上传错误:" + file.name,
         duration: 0,
-        type:'error',
+        type: "error",
         message: JSON.parse(message).returnType
       });
     },
@@ -422,6 +432,34 @@ export default {
     minimize() {
       this.mini = !this.mini;
       this.uploadMain = !this.uploadMain;
+    },
+    handledelete() {
+      let arr = [];
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        arr[i] = this.multipleSelection[i].id;
+      }
+      this.$confirm("是否删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          axion
+            .batchDeleteFiles({
+              fileContentIds: arr
+            })
+            .then(d => {
+              if (d.data.returnCode != 200) {
+                this.$message(d.data.returnData);
+              }
+              console.log(d.data.returnData);
+            });
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+        })
+        .catch(() => {});
     }
   }
 };

@@ -55,11 +55,17 @@ const validAuth = () => get('/require_auth')
 const saveFileToContent = (fileId, fileName, totalSize, rootPath, relativePath, directoryId, directory, fileType) => post('/fileContent/saveFileToContent', fileId, fileName, totalSize, rootPath, relativePath, directoryId, directory, fileType)
 /*获取文件目录*/
 const getContent = (parentId) => get('/content/getContent?parentId=' + parentId)
+/*删除文件*/
+const deleteFile = (fileContentId) => post('/fileContent/deleteFile', fileContentId)
+/*批量删除文件*/
+const batchDeleteFiles = (fileContentIds) => post('/fileContent/batchDeleteFiles', fileContentIds)
 export default {
   login,
   register,
   valid,
   validAuth,
   saveFileToContent,
-  getContent
+  getContent,
+  deleteFile,
+  batchDeleteFiles
 }

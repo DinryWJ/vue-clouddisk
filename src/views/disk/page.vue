@@ -11,22 +11,26 @@ export default {
   data() {
     return {
       data: "",
-      name:""
+      name: ""
+    };
+  },
+  mounted() {
+    this.init();
+  },
+  methods: {
+    init() {
+      this.data = this.$route.params.id;
+      this.name = this.$route.params.name;
+      if (this.data == null) {
+        this.$router.push("/disk/home");
+      }
     }
-  },
-  mounted(){
-    this.data = this.$route.params.id;
-    this.name = this.$route.params.name;
-  },
-  methods:{
-
   }
-
-}
+};
 </script>
 <style scoped>
-.wrap{
-   padding:0 10%;
+.wrap {
+  padding: 0 10%;
 }
 </style>
 

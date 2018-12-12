@@ -58,7 +58,7 @@ const getContent = (parentId) => get('/content/getContent?parentId=' + parentId)
 /*删除文件*/
 const deleteFile = (fileContentId) => post('/fileContent/deleteFile', fileContentId)
 /*批量删除文件*/
-const batchDeleteFiles = (fileContentIds) => post('/fileContent/batchDeleteFiles', fileContentIds)
+const batchDeleteFiles = (fileContentInfoList) => post2('/fileContent/batchDeleteFiles', fileContentInfoList)
 export default {
   login,
   register,

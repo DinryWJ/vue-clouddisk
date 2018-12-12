@@ -436,7 +436,10 @@ export default {
     handledelete() {
       let arr = [];
       for (let i = 0; i < this.multipleSelection.length; i++) {
-        arr[i] = this.multipleSelection[i].id;
+        let obj = {};
+        obj.id = this.multipleSelection[i].id;
+        obj.isFolder = this.multipleSelection[i].isFolder;
+        arr[i] = obj;
       }
       this.$confirm("是否删除该文件, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -445,19 +448,17 @@ export default {
       })
         .then(() => {
           axion
-            .batchDeleteFiles({
-              fileContentIds: arr
-            })
+            .batchDeleteFiles(arr)
             .then(d => {
               if (d.data.returnCode != 200) {
                 this.$message(d.data.returnData);
               }
-              console.log(d.data.returnData);
-            });
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+              this.getContent(this.breadList[this.breadList.length - 1].id);
+            });         
         })
         .catch(() => {});
     }

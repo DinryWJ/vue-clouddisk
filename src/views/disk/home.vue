@@ -3,7 +3,7 @@
     <v-contextmenu ref="contextmenu" :theme="theme" @show="show" @hide="hide" style="width:150px">
       <div v-show="menuType">
         <v-contextmenu-item @click="handleClick" :disabled="multiDisabled">打开</v-contextmenu-item>
-        <v-contextmenu-item @click="handleClick">下载</v-contextmenu-item>
+        <v-contextmenu-item @click="handleDownload">下载</v-contextmenu-item>
 
         <v-contextmenu-item divider></v-contextmenu-item>
 
@@ -439,6 +439,7 @@ export default {
         let obj = {};
         obj.id = this.multipleSelection[i].id;
         obj.isFolder = this.multipleSelection[i].isFolder;
+        obj.name = this.multipleSelection[i].name;
         arr[i] = obj;
       }
       this.$confirm("是否删除该文件, 是否继续?", "提示", {
@@ -447,20 +448,33 @@ export default {
         type: "warning"
       })
         .then(() => {
-          axion
-            .batchDeleteFiles(arr)
-            .then(d => {
-              if (d.data.returnCode != 200) {
-                this.$message(d.data.returnData);
-              }
-              this.$message({
-                type: "success",
-                message: "删除成功!"
-              });
-              this.getContent(this.breadList[this.breadList.length - 1].id);
-            });         
+          axion.batchDeleteFiles(arr).then(d => {
+            if (d.data.returnCode != 200) {
+              this.$message(d.data.returnData);
+            }
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+            this.getContent(this.breadList[this.breadList.length - 1].id);
+          });
         })
         .catch(() => {});
+    },
+    handleDownload() {
+      let arr = [];
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        let obj = {};
+        obj.id = this.multipleSelection[i].id;
+        obj.isFolder = this.multipleSelection[i].isFolder;
+        obj.name = this.multipleSelection[i].name;
+        arr[i] = obj;
+      }
+      axion.download(arr).then(d => {
+        if (d.data.returnCode != 200) {
+          this.$message(d.data.returnData);
+        }
+      });
     }
   }
 };

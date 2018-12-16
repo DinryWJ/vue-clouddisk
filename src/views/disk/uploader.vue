@@ -1,24 +1,35 @@
 <template>
-<div>
-  <uploader :options="options" class="uploader-example" ref="uploader">
-    <uploader-unsupport></uploader-unsupport>
-    <!-- <uploader-drop>
+  <div>
+    <uploader :options="options" class="uploader-example" ref="uploader">
+      <uploader-unsupport></uploader-unsupport>
+      <!-- <uploader-drop>
       <p>Drop files here to upload or</p>
       <uploader-btn>select files</uploader-btn>
       <uploader-btn :attrs="attrs">select images</uploader-btn>
       <uploader-btn :directory="true">select folder</uploader-btn>
-    </uploader-drop> -->
-    <uploader-list></uploader-list>
-  </uploader>
-  <el-button id="btn">qwe</el-button>
-  <el-popover placement="bottom" width="400" trigger="hover">
-  <div class="uploaditem"><i class="fas fa-plus"></i><span style="margin-left:10px;">文件夹</span></div>
-  <hr style="border:1 dashed" color=#f0f1f3 SIZE=1/>
-  <div class="uploaditem" id="upload-file"><i class="fas fa-file-upload"></i><span style="margin-left:10px;">上传文件</span></div>
-  <div class="uploaditem" id="upload-folder"><i class="fas fa-folder-plus"></i><span style="margin-left:10px;">上传文件夹</span></div>
-  <el-button type="primary" icon="fas fa-plus-square" slot="reference">新建</el-button>
-  </el-popover>
-</div>
+      </uploader-drop>-->
+      <uploader-list></uploader-list>
+    </uploader>
+    <el-button id="btn">qwe</el-button>
+    <el-popover placement="bottom" width="400" trigger="hover">
+      <div class="uploaditem">
+        <i class="fas fa-plus"></i>
+        <span style="margin-left:10px;">文件夹</span>
+      </div>
+      <hr style="border:1 dashed" color="#f0f1f3" size="1">
+      <div class="uploaditem" id="upload-file">
+        <i class="fas fa-file-upload"></i>
+        <span style="margin-left:10px;">上传文件</span>
+      </div>
+      <div class="uploaditem" id="upload-folder">
+        <i class="fas fa-folder-plus"></i>
+        <span style="margin-left:10px;">上传文件夹</span>
+      </div>
+      <el-button type="primary" icon="fas fa-plus-square" slot="reference">新建</el-button>
+    </el-popover>
+    <button @click="clickBT">123</button>
+    <button id="test"></button>
+  </div>
 </template>
 
 <script>
@@ -130,6 +141,29 @@ export default {
         }
         this.$message(d.data.returnData);
       });
+    },
+    clickBT(){
+    var url = "http://localhost:12315/fileContent/downloadFiles?fs=364";
+    var xhr = new XMLHttpRequest();
+    xhr.open('get', url, true);
+    xhr.setRequestHeader("Authorization",localStorage.getItem("token"));
+    xhr.responseType = "blob"; // 返回类型blob  blob 存储着大量的二进制数据
+    xhr.onload = function () {
+        console.log(xhr)
+        if (this.status === 200) {
+            var blob = this.response;
+            var reader = new FileReader();
+            reader.readAsDataURL(blob); // 转换为base64，可以直接放入a标签href
+            reader.onload = function (e) {
+                var a = document.createElement("a"); // 转换完成，创建一个a标签用于下载
+                a.download = "maven" + ".txt";
+                a.href = e.target.result;
+                a.click();
+                a.remove();
+            };
+        }
+    }
+    xhr.send(); // 发送ajax请求
     }
   }
 };

@@ -4,7 +4,8 @@ import {
 } from 'element-ui'
 import {
   objBase,
-  modelBase
+  modelBase,
+  baseURL
 } from './config'
 
 const errorMsg = '服务器内部错误'
@@ -60,7 +61,10 @@ const deleteFile = (fileContentId) => post('/fileContent/deleteFile', fileConten
 /*批量删除文件*/
 const batchDeleteFiles = (fileContentInfoList) => post2('/fileContent/batchDeleteFiles', fileContentInfoList)
 /*下载文件*/
-const download = (fileContentInfoList)=>post2('/fileContent/downloadFiles',fileContentInfoList)
+const downloadUrl = baseURL + "/fileContent/downloadFiles?"
+
+export{downloadUrl}
+
 export default {
   login,
   register,
@@ -70,5 +74,5 @@ export default {
   getContent,
   deleteFile,
   batchDeleteFiles,
-  download
+
 }

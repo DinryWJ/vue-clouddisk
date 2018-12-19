@@ -10,7 +10,7 @@
       </uploader-drop>-->
       <uploader-list></uploader-list>
     </uploader>
-    <el-button id="btn">qwe</el-button>
+    <el-button id="btn" @click="test">qwe</el-button>
     <el-popover placement="bottom" width="400" trigger="hover">
       <div class="uploaditem">
         <i class="fas fa-plus"></i>
@@ -28,12 +28,12 @@
       <el-button type="primary" icon="fas fa-plus-square" slot="reference">新建</el-button>
     </el-popover>
     <button @click="clickBT">123</button>
-    <button id="test"></button>
   </div>
 </template>
 
 <script>
 import axion from "@/utils/http_url.js"; //接口文件
+import {downloadUrl} from "@/utils/http_url.js"; //接口文件
 import { fileMd5HeadTailTime } from "../../utils/md5.js";
 export default {
   data() {
@@ -70,7 +70,7 @@ export default {
           Authorization: localStorage.getItem("token")
         },
         checkChunkUploadedByResponse: function(chunk, message) {
-          var objMessage = {};
+          let objMessage = {};
           try {
             objMessage = JSON.parse(message);
           } catch (e) {}
@@ -143,24 +143,22 @@ export default {
       });
     },
     clickBT(){
-    var url = "http://localhost:12315/fileContent/downloadFiles?fs=364";
-    var xhr = new XMLHttpRequest();
+    let url = downloadUrl+"ds=63";
+    let xhr = new XMLHttpRequest();
     xhr.open('get', url, true);
     xhr.setRequestHeader("Authorization",localStorage.getItem("token"));
     xhr.responseType = "blob"; // 返回类型blob  blob 存储着大量的二进制数据
     xhr.onload = function () {
-        console.log(xhr)
         if (this.status === 200) {
-            var blob = this.response;
-            var reader = new FileReader();
-            reader.readAsDataURL(blob); // 转换为base64，可以直接放入a标签href
-            reader.onload = function (e) {
-                var a = document.createElement("a"); // 转换完成，创建一个a标签用于下载
-                a.download = "maven" + ".txt";
-                a.href = e.target.result;
-                a.click();
-                a.remove();
-            };
+          let blob = this.response;
+          let fileName = xhr.getResponseHeader("Content-Disposition").substring(9);
+          let link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = fileName;
+          link.target = "_blank";
+          link.click();
+          window.URL.revokeObjectURL(link.href);
+          link.remove();
         }
     }
     xhr.send(); // 发送ajax请求

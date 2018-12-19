@@ -143,6 +143,7 @@
 </template>
 <script>
 import axion from "@/utils/http_url.js"; //接口文件
+import {downloadUrl} from "@/utils/http_url.js";
 import "element-ui/lib/theme-chalk/display.css";
 import { fileMd5HeadTailTime } from "../../utils/md5.js";
 export default {
@@ -462,19 +463,15 @@ export default {
         .catch(() => {});
     },
     handleDownload() {
-      let arr = [];
+      let arr = "";
       for (let i = 0; i < this.multipleSelection.length; i++) {
-        let obj = {};
-        obj.id = this.multipleSelection[i].id;
-        obj.isFolder = this.multipleSelection[i].isFolder;
-        obj.name = this.multipleSelection[i].name;
-        arr[i] = obj;
-      }
-      axion.download(arr).then(d => {
-        if (d.data.returnCode != 200) {
-          this.$message(d.data.returnData);
+        if(this.multipleSelection[i].isFolder){
+          arr = arr + "ds="+this.multipleSelection[i].id;
+        }else{
+          arr = arr + "fs="+this.multipleSelection[i].id;
         }
-      });
+      }
+      console.log(arr);
     }
   }
 };

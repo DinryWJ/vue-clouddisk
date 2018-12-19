@@ -143,7 +143,7 @@
 </template>
 <script>
 import axion from "@/utils/http_url.js"; //接口文件
-import {downloadUrl} from "@/utils/http_url.js";
+import { downloadUrl } from "@/utils/http_url.js";
 import "element-ui/lib/theme-chalk/display.css";
 import { fileMd5HeadTailTime } from "../../utils/md5.js";
 export default {
@@ -464,14 +464,41 @@ export default {
     },
     handleDownload() {
       let arr = "";
+      let flag = true;
       for (let i = 0; i < this.multipleSelection.length; i++) {
-        if(this.multipleSelection[i].isFolder){
-          arr = arr + "ds="+this.multipleSelection[i].id;
-        }else{
-          arr = arr + "fs="+this.multipleSelection[i].id;
+        if (flag) {
+          flag = false;
+        } else {
+          arr += "&";
+        }
+        if (this.multipleSelection[i].isFolder) {
+          arr = arr + "ds=" + this.multipleSelection[i].id;
+        } else {
+          arr = arr + "fs=" + this.multipleSelection[i].id;
         }
       }
       console.log(arr);
+      let url = downloadUrl + arr;
+      let xhr = new XMLHttpRequest();
+      xhr.open("get", url, true);
+      xhr.setRequestHeader("Authorization", localStorage.getItem("token"));
+      xhr.responseType = "blob"; // 返回类型blob  blob 存储着大量的二进制数据
+      xhr.onload = function() {
+        if (this.status === 200) {
+          let blob = this.response;
+          let fileName = xhr
+            .getResponseHeader("Content-Disposition")
+            .substring(9);
+          let link = document.createElement("a");
+          link.href = window.URL.createObjectURL(blob);
+          link.download = fileName;
+          link.target = "_blank";
+          link.click();
+          window.URL.revokeObjectURL(link.href);
+          link.remove();
+        }
+      };
+      xhr.send(); // 发送ajax请求
     }
   }
 };

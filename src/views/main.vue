@@ -29,7 +29,7 @@
         </el-col>
         </el-row>
       </el-aside>
-      <el-main  style="border:1px solid #e4e4e4">
+      <el-main  style="border:1px solid #e4e4e4;margin-left:-1px;">
         <!-- Body -->
          <router-view></router-view>
       </el-main>

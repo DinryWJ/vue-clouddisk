@@ -60,10 +60,16 @@ const getContent = (parentId) => get('/content/getContent?parentId=' + parentId)
 const deleteFile = (fileContentId) => post('/fileContent/deleteFile', fileContentId)
 /*批量删除文件*/
 const batchDeleteFiles = (fileContentInfoList) => post2('/fileContent/batchDeleteFiles', fileContentInfoList)
+/*文件夹重命名*/
+const renameDirectory = (contentId, name) => post('/content/renameDirectory', contentId, name)
+/*文件重命名*/
+const renameFile = (fileId, name) => post('/fileContent/renameFile', fileId, name)
 /*下载文件*/
 const downloadUrl = baseURL + "/fileContent/downloadFiles?"
 
-export{downloadUrl}
+export {
+  downloadUrl
+}
 
 export default {
   login,
@@ -74,5 +80,6 @@ export default {
   getContent,
   deleteFile,
   batchDeleteFiles,
-
+  renameDirectory,
+  renameFile
 }

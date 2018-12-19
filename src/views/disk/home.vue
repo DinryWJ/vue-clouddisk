@@ -17,7 +17,7 @@
 
         <v-contextmenu-item divider></v-contextmenu-item>
 
-        <v-contextmenu-item @click="handleClick" :disabled="multiDisabled">重命名</v-contextmenu-item>
+        <v-contextmenu-item @click="handleRename" :disabled="multiDisabled">重命名</v-contextmenu-item>
         <v-contextmenu-item @click="handledelete">删除</v-contextmenu-item>
       </div>
       <div v-show="!menuType">
@@ -58,7 +58,7 @@
         <i class="fas fa-sort-amount-down"></i>
       </el-button>
       <el-input
-        class="hidden-sm-and-down"
+        class="hidden-sm-and-down searchInput"
         placeholder="请输入内容"
         suffix-icon="el-icon-search"
         v-model="input"
@@ -83,7 +83,7 @@
         @header-contextmenu="clickTh"
       >
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column label="文件" min-width="300">
+        <el-table-column label="文件" min-width="400">
           <template slot-scope="scope">
             <div>
               <div v-if="scope.row.isFolder" class="folderType"></div>
@@ -92,15 +92,22 @@
             <span
               class="folder"
               v-if="scope.row.isFolder"
+              v-show="!scope.row.editFlag"
               style="margin-left:10px;"
               @click="openFolder(scope.$index,scope.row.id)"
             >{{ scope.row.name }}</span>
             <span
               class="file"
               v-else
+              v-show="!scope.row.editFlag"
               style="margin-left:10px;"
               @click="openFile(scope.row.id,scope.row.name)"
             >{{ scope.row.name }}</span>
+            <span v-if="scope.row.editFlag" class="cell-edit-input">
+              <el-input class="editInput" size="mini" v-model="scope.row.name" placeholder="请输入内容"></el-input>
+              <el-button class="editBtn" icon="el-icon-check" @click="doRename(scope.$index)"></el-button>
+              <el-button class="editBtn" icon="el-icon-close" @click="cancelRename(scope.$index)"></el-button>
+            </span>
           </template>
         </el-table-column>
         <el-table-column label="大小" width="180">
@@ -249,6 +256,8 @@ export default {
           temp.name = d.data.returnData.contents[i].name;
           temp.date = d.data.returnData.contents[i].updateTime;
           temp.size = "-";
+          temp.oldName = d.data.returnData.contents[i].name;
+          temp.editFlag = false;
           temp.fileType = "folder";
           temp.isFolder = true;
           _this.tableData.push(temp);
@@ -259,6 +268,8 @@ export default {
           temp.name = d.data.returnData.files[i].name;
           temp.date = d.data.returnData.files[i].updateTime;
           temp.size = d.data.returnData.files[i].totalSize;
+          temp.oldName = d.data.returnData.files[i].name;
+          temp.editFlag = false;
           temp.fileType = d.data.returnData.files[i].fileType;
           temp.isFolder = false;
           _this.tableData.push(temp);
@@ -499,6 +510,47 @@ export default {
         }
       };
       xhr.send(); // 发送ajax请求
+    },
+    handleRename() {
+      this.multipleSelection[0].editFlag = true;
+    },
+    doRename(index) {
+      if (this.tableData[index].name == this.tableData[index].oldName) {
+        this.$message("与原名字相同！");
+      } else {
+        if (this.tableData[index].isFolder) {
+          axion
+            .renameDirectory({
+              contentId: this.tableData[index].id,
+              name: this.tableData[index].name
+            })
+            .then(d => {
+              if (d.data.returnCode != 200) {
+                this.$message(d.data.returnData);
+              }
+              this.$message("修改成功！");
+              this.tableData[index].oldName = this.tableData[index].name;
+            });
+        } else {
+          axion
+            .renameFile({
+              fileId: this.tableData[index].id,
+              name: this.tableData[index].name
+            })
+            .then(d => {
+              if (d.data.returnCode != 200) {
+                this.$message(d.data.returnData);
+              }
+              this.$message("修改成功！");
+              this.tableData[index].oldName = this.tableData[index].name;
+            });
+        }
+      }
+      this.tableData[index].editFlag = false;
+    },
+    cancelRename(index) {
+      this.tableData[index].name = this.tableData[index].oldName;
+      this.tableData[index].editFlag = false;
     }
   }
 };
@@ -511,6 +563,9 @@ export default {
 <style>
 .cell {
   display: flex !important;
+}
+td {
+  padding: 10px !important;
 }
 .uploader-file-icon::before {
   content: url(../../assets/small-file.png) !important;

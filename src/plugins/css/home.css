@@ -1,28 +1,47 @@
-.uploaditem{
-  cursor:pointer;
-  font-size:15px;
-  height:30px;
-  line-height:30px;
+.cell-edit-input {
+  margin-left: 10px;
+}
+
+.searchInput {
+  float: right;
+}
+
+.editBtn {
+  float: right;
+  padding: 0;
+  padding: 6px;
+}
+
+.uploaditem {
+  cursor: pointer;
+  font-size: 15px;
+  height: 30px;
+  line-height: 30px;
   padding: 0 20px;
 }
-.uploaditem:hover{
+
+.uploaditem:hover {
   background-color: #f0f1f3;
 }
+
 .button {
   padding: 0 24px;
   margin-right: 10px;
 }
+
 .el-input {
-  float: right;
   width: 200px;
 }
+
 #sort {
   float: right;
   color: #000;
 }
+
 .body {
   margin-top: 10px;
 }
+
 .uploadField {
   background-color: blueviolet;
   width: 614px;
@@ -31,83 +50,108 @@
   bottom: 50px;
   z-index: 20;
 }
+
 .uploader-example {
   font-size: 12px;
   min-height: 300px;
   max-height: 445px;
 }
+
 .uploader-example .uploader-btn {
   margin-right: 4px;
 }
+
 .uploader-example .uploader-list {
   max-height: 374px;
   overflow: auto;
   overflow-x: hidden;
   overflow-y: auto;
 }
+
 .text {
   font-size: 14px;
 }
+
 .item {
   margin-bottom: 18px;
 }
+
 .clearfix:before,
 .clearfix:after {
   display: table;
   content: "";
 }
+
 .clearfix:after {
   clear: both
 }
-.folder{
+
+.folder {
   color: #606266;
   cursor: pointer;
+  margin-top: 4px;
 }
-.folder:hover{
-  text-decoration:underline;
+
+.folder:hover {
+  text-decoration: underline;
 }
-.folderType{
+
+.folderType {
   width: 32px;
   height: 24px;
+  margin-top: 4px;
   background: url(../../assets/small-folder.png);
 }
-.file{
+
+.file {
   color: #606266;
   cursor: pointer;
 }
-.file:hover{
-  text-decoration:underline;
+
+.file:hover {
+  text-decoration: underline;
 }
-.pdf{
+
+.pdf {
   background: url(../../assets/small-pdf.png);
 }
-.xls{
+
+.xls {
   background: url(../../assets/small-excel.png);
 }
-.exe{
+
+.exe {
   background: url(../../assets/small-exe.png);
 }
-.doc{
+
+.doc {
   background: url(../../assets/small-word.png);
 }
-.ppt{
+
+.ppt {
   background: url(../../assets/small-ppt.png);
 }
-.video{
+
+.video {
   background: url(../../assets/small-video.png);
 }
-.music{
+
+.music {
   background: url(../../assets/small-music.png);
 }
-.image{
+
+.image {
   background: url(../../assets/small-image.png);
 }
-.zip{
+
+.zip {
   background: url(../../assets/small-zip.png);
 }
-.text{
+
+.text {
   background: url(../../assets/small-document.png);
 }
-.unknown{
+
+.unknown {
   background: url(../../assets/small-file.png);
 }

@@ -29,7 +29,7 @@
         </el-col>
         </el-row>
       </el-aside>
-      <el-main  style="border:1px solid #e4e4e4;margin-left:-1px;">
+      <el-main id="main">
         <!-- Body -->
          <router-view></router-view>
       </el-main>
@@ -42,32 +42,21 @@ import axion from "@/utils/http_url.js"; //接口文件
 export default {
   data() {
     return {
-      screenHeight: document.documentElement.clientHeight - 60 //减去header的60px
     };
   },
   mounted() {
-    document.getElementById("sidebar").style.height = this.screenHeight + "px"; //页面初始化
-    document.getElementById("app").style.height = this.screenHeight + "px";
-    window.onresize = () => {
-      return (() => {
-        this.screenHeight = document.documentElement.clientHeight;
-      })();
-    };
   },
   methods: {
-
   },
-  watch: {
-    screenHeight(val) {
-      this.screenHeight = val;
-      document.getElementById("sidebar").style.height =
-        this.screenHeight - 60 + "px"; //检测窗口的大小，并赋值
-    }
-  }
 };
 </script>
  
 <style scoped>
+#main{
+  border:1px solid #e4e4e4;
+  margin-left:-1px;
+  height: calc(100vh - 60px);
+}
 #app{
   overflow: hidden;
 }

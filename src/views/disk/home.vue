@@ -39,7 +39,7 @@
 
     <div class="nav">
       <el-popover placement="bottom" width="300" trigger="hover">
-        <div class="uploaditem">
+        <div class="uploaditem" @click="newFolder">
           <i class="fas fa-plus"></i>
           <span style="margin-left:10px;">文件夹</span>
         </div>
@@ -260,6 +260,7 @@ export default {
           temp.editFlag = false;
           temp.fileType = "folder";
           temp.isFolder = true;
+          temp.isNew = false;
           _this.tableData.push(temp);
         }
         for (let i = 0; i < d.data.returnData.files.length; i++) {
@@ -272,6 +273,7 @@ export default {
           temp.editFlag = false;
           temp.fileType = d.data.returnData.files[i].fileType;
           temp.isFolder = false;
+          temp.isNew = false;
           _this.tableData.push(temp);
         }
       });
@@ -518,7 +520,20 @@ export default {
       if (this.tableData[index].name == this.tableData[index].oldName) {
         this.$message("与原名字相同！");
       } else {
-        if (this.tableData[index].isFolder) {
+        if (this.tableData[index].isNew) {
+          axion
+            .newFolder({
+              name: this.tableData[index].name
+            })
+            .then(d => {
+              if (d.data.returnCode != 200) {
+                this.$message(d.data.returnData);
+              }
+              this.$message("创建成功！");
+              this.tableData[index].oldName = this.tableData[index].name;
+            });
+        }
+        if (!this.tableData[index].isNew && this.tableData[index].isFolder) {
           axion
             .renameDirectory({
               contentId: this.tableData[index].id,
@@ -531,7 +546,8 @@ export default {
               this.$message("修改成功！");
               this.tableData[index].oldName = this.tableData[index].name;
             });
-        } else {
+        }
+        if (!this.tableData[index].isNew && !this.tableData[index].isFolder) {
           axion
             .renameFile({
               fileId: this.tableData[index].id,
@@ -551,6 +567,19 @@ export default {
     cancelRename(index) {
       this.tableData[index].name = this.tableData[index].oldName;
       this.tableData[index].editFlag = false;
+    },
+    newFolder() {
+      let temp = {};
+      temp.id = 0;
+      temp.name = "";
+      temp.date = "-";
+      temp.size = "-";
+      temp.oldName = "";
+      temp.editFlag = true;
+      temp.fileType = "folder";
+      temp.isFolder = true;
+      temp.isNew = true;
+      this.tableData.unshift(temp);
     }
   }
 };

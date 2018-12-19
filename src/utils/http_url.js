@@ -64,6 +64,8 @@ const batchDeleteFiles = (fileContentInfoList) => post2('/fileContent/batchDelet
 const renameDirectory = (contentId, name) => post('/content/renameDirectory', contentId, name)
 /*文件重命名*/
 const renameFile = (fileId, name) => post('/fileContent/renameFile', fileId, name)
+/*创建文件夹*/
+const newFolder = (name) =>post('/content/newFolder',name);
 /*下载文件*/
 const downloadUrl = baseURL + "/fileContent/downloadFiles?"
 
@@ -81,5 +83,6 @@ export default {
   deleteFile,
   batchDeleteFiles,
   renameDirectory,
-  renameFile
+  renameFile,
+  newFolder
 }

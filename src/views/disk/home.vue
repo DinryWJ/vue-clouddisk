@@ -2,7 +2,7 @@
   <div>
     <v-contextmenu ref="contextmenu" :theme="theme" @show="show" @hide="hide" style="width:150px">
       <div v-show="menuType">
-        <v-contextmenu-item @click="handleClick" :disabled="multiDisabled">打开</v-contextmenu-item>
+        <v-contextmenu-item @click="handleOpen" :disabled="multiDisabled">打开</v-contextmenu-item>
         <v-contextmenu-item @click="handleDownload">下载</v-contextmenu-item>
 
         <v-contextmenu-item divider></v-contextmenu-item>
@@ -21,7 +21,7 @@
         <v-contextmenu-item @click="handledelete">删除</v-contextmenu-item>
       </div>
       <div v-show="!menuType">
-        <v-contextmenu-item>
+        <v-contextmenu-item @click="newFolder">
           <i class="fas fa-plus"></i>
           <span style="margin-left:10px;">文件夹</span>
         </v-contextmenu-item>
@@ -55,7 +55,7 @@
         <el-button type="primary" icon="fas fa-plus" slot="reference">新建</el-button>
       </el-popover>
       <el-button id="sort" class="hidden-sm-and-down">
-        <i class="fas fa-sort-amount-down"></i>
+        <i class="fas fa-sync-alt"></i>
       </el-button>
       <el-input
         class="hidden-sm-and-down searchInput"
@@ -278,6 +278,18 @@ export default {
         }
       });
     },
+    handleOpen(){
+      if(this.multipleSelection[0].isFolder){
+        let bread = {};
+        bread.id = this.multipleSelection[0].id;
+        bread.name = this.multipleSelection[0].name;
+        this.breadList.push(bread);
+        this.tableData = new Array();
+        this.getContent(this.multipleSelection[0].id);
+      }
+      //TODO 打开文件
+      
+    },
     openFolder(index, val) {
       let bread = {};
       bread.id = this.tableData[index].id;
@@ -451,6 +463,10 @@ export default {
       let arr = [];
       for (let i = 0; i < this.multipleSelection.length; i++) {
         let obj = {};
+        if(this.multipleSelection[i].id == -1){
+          this.$message("存在未确认文件");
+          return;
+        }
         obj.id = this.multipleSelection[i].id;
         obj.isFolder = this.multipleSelection[i].isFolder;
         obj.name = this.multipleSelection[i].name;
@@ -479,6 +495,10 @@ export default {
       let arr = "";
       let flag = true;
       for (let i = 0; i < this.multipleSelection.length; i++) {
+        if(this.multipleSelection[i].id == -1){
+          this.$message("存在未确认文件");
+          return;
+        }
         if (flag) {
           flag = false;
         } else {
@@ -491,6 +511,7 @@ export default {
         }
       }
       console.log(arr);
+      let _this = this;
       let url = downloadUrl + arr;
       let xhr = new XMLHttpRequest();
       xhr.open("get", url, true);
@@ -498,6 +519,10 @@ export default {
       xhr.responseType = "blob"; // 返回类型blob  blob 存储着大量的二进制数据
       xhr.onload = function() {
         if (this.status === 200) {
+          if(this.response.size == 0 ){
+            _this.$message('无法下载空文件!');
+            return;
+          }
           let blob = this.response;
           let fileName = xhr
             .getResponseHeader("Content-Disposition")
@@ -517,22 +542,35 @@ export default {
       this.multipleSelection[0].editFlag = true;
     },
     doRename(index) {
+      if (this.tableData[index].isNew && this.tableData[index].name == this.tableData[index].oldName) {
+        this.$message("请输入文件夹名！");
+        return;
+      }
       if (this.tableData[index].name == this.tableData[index].oldName) {
         this.$message("与原名字相同！");
       } else {
+        //新增文件夹
         if (this.tableData[index].isNew) {
           axion
             .newFolder({
+              parentId: this.breadList[this.breadList.length - 1].id,
               name: this.tableData[index].name
             })
             .then(d => {
               if (d.data.returnCode != 200) {
                 this.$message(d.data.returnData);
               }
+              if(d.data.returnData==-1){
+                this.$message("创建失败请重试！");
+                return;
+              }
               this.$message("创建成功！");
+              this.tableData[index].id = d.data.returnData;
               this.tableData[index].oldName = this.tableData[index].name;
+              this.tableData[index].isNew = false;
             });
         }
+        //重命名文件夹
         if (!this.tableData[index].isNew && this.tableData[index].isFolder) {
           axion
             .renameDirectory({
@@ -547,6 +585,7 @@ export default {
               this.tableData[index].oldName = this.tableData[index].name;
             });
         }
+        //重命名文件
         if (!this.tableData[index].isNew && !this.tableData[index].isFolder) {
           axion
             .renameFile({
@@ -565,12 +604,16 @@ export default {
       this.tableData[index].editFlag = false;
     },
     cancelRename(index) {
-      this.tableData[index].name = this.tableData[index].oldName;
-      this.tableData[index].editFlag = false;
+      if (this.tableData[index].isNew) {
+        this.tableData.shift();
+      } else {
+        this.tableData[index].name = this.tableData[index].oldName;
+        this.tableData[index].editFlag = false;
+      }
     },
     newFolder() {
       let temp = {};
-      temp.id = 0;
+      temp.id = -1;
       temp.name = "";
       temp.date = "-";
       temp.size = "-";

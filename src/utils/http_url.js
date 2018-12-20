@@ -56,6 +56,8 @@ const validAuth = () => get('/require_auth')
 const saveFileToContent = (fileId, fileName, totalSize, rootPath, relativePath, directoryId, directory, fileType) => post('/fileContent/saveFileToContent', fileId, fileName, totalSize, rootPath, relativePath, directoryId, directory, fileType)
 /*获取文件目录*/
 const getContent = (parentId) => get('/content/getContent?parentId=' + parentId)
+/*获取目录*/
+const getDirectory = (parentId) => get('/content/getDirectory?parentId=' + parentId)
 /*删除文件*/
 const deleteFile = (fileContentId) => post('/fileContent/deleteFile', fileContentId)
 /*批量删除文件*/
@@ -80,6 +82,7 @@ export default {
   validAuth,
   saveFileToContent,
   getContent,
+  getDirectory,
   deleteFile,
   batchDeleteFiles,
   renameDirectory,

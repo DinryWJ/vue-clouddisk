@@ -33,7 +33,7 @@
 
 <script>
 import axion from "@/utils/http_url.js"; //接口文件
-import {downloadUrl} from "@/utils/http_url.js"; //接口文件
+import { downloadUrl } from "@/utils/http_url.js"; //接口文件
 import { fileMd5HeadTailTime } from "../../utils/md5.js";
 export default {
   data() {
@@ -96,7 +96,12 @@ export default {
           return true;
         });
       });
-      uploaderInstance.assignBrowse(document.getElementById('upload-file'), false, false, {});
+      uploaderInstance.assignBrowse(
+        document.getElementById("upload-file"),
+        false,
+        false,
+        {}
+      );
     },
     saveFileToContent(rootFile, file, message, chunk) {
       if (JSON.parse(message).returnData.success == "true") {
@@ -142,17 +147,19 @@ export default {
         this.$message(d.data.returnData);
       });
     },
-    clickBT(){
-    let url = downloadUrl+"ds=63";
-    let xhr = new XMLHttpRequest();
-    xhr.open('get', url, true);
-    xhr.setRequestHeader("Authorization",localStorage.getItem("token"));
-    xhr.responseType = "blob"; // 返回类型blob  blob 存储着大量的二进制数据
-    xhr.onload = function () {
+    clickBT() {
+      let url = downloadUrl + "ds=63";
+      let xhr = new XMLHttpRequest();
+      xhr.open("get", url, true);
+      xhr.setRequestHeader("Authorization", localStorage.getItem("token"));
+      xhr.responseType = "blob"; // 返回类型blob  blob 存储着大量的二进制数据
+      xhr.onload = function() {
         if (this.status === 200) {
           let blob = this.response;
-          let fileName = xhr.getResponseHeader("Content-Disposition").substring(9);
-          let link = document.createElement('a');
+          let fileName = xhr
+            .getResponseHeader("Content-Disposition")
+            .substring(9);
+          let link = document.createElement("a");
           link.href = window.URL.createObjectURL(blob);
           link.download = fileName;
           link.target = "_blank";
@@ -160,22 +167,30 @@ export default {
           window.URL.revokeObjectURL(link.href);
           link.remove();
         }
-    }
-    xhr.send(); // 发送ajax请求
+      };
+      xhr.send(); // 发送ajax请求
     }
   }
 };
 </script>
+<style>
+.el-scrollbar__wrap {
+  overflow-x: hidden;
+}
+.el-dialog__body {
+  padding: 0;
+}
+</style>
 
 <style scoped>
-.uploaditem{
-  cursor:pointer;
-  font-size:15px;
-  height:30px;
-  line-height:30px;
+.uploaditem {
+  cursor: pointer;
+  font-size: 15px;
+  height: 30px;
+  line-height: 30px;
   padding: 0 20px;
 }
-.uploaditem:hover{
+.uploaditem:hover {
   background-color: #f0f1f3;
 }
 .uploader-example {

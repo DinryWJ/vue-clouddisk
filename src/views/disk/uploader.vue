@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-button id="btn" @click="test">qwe</el-button>
-    <v-jstree :data="data" show-checkbox whole-row @item-click="itemClick"></v-jstree>
+    <v-jstree :data="data" show-checkbox whole-row :async="loadData" @item-click="itemClick"></v-jstree>
   </div>
 </template>
 
@@ -11,75 +11,28 @@ export default {
   data() {
     return {
       data: [
-          {
-            "text": "Same but with checkboxes",
-            "children": [
-              {
-                "text": "initially selected",
-                "selected": true
-              },
-              {
-                "text": "custom icon",
-                "icon": "fa fa-warning icon-state-danger"
-              },
-              {
-                "text": "initially open",
-                "icon": "fa fa-folder icon-state-default",
-                "opened": true,
-                "children": [
-                  {
-                    "text": "Another node"
-                  }
-                ]
-              },
-              {
-                "text": "custom icon",
-                "icon": "fa fa-warning icon-state-warning"
-              },
-              {
-                "text": "disabled node",
-                "icon": "fa fa-check icon-state-success",
-                "disabled": true
-              }
-            ]
-          },
-          {
-            "text": "Same but with checkboxes",
-            "opened": true,
-            "children": [
-              {
-                "text": "initially selected",
-                "selected": true
-              },
-              {
-                "text": "custom icon",
-                "icon": "fa fa-warning icon-state-danger"
-              },
-              {
-                "text": "initially open",
-                "icon": "fa fa-folder icon-state-default",
-                "opened": true,
-                "children": [
-                  {
-                    "text": "Another node"
-                  }
-                ]
-              },
-              {
-                "text": "custom icon",
-                "icon": "fa fa-warning icon-state-warning"
-              },
-              {
-                "text": "disabled node",
-                "icon": "fa fa-check icon-state-success",
-                "disabled": true
-              }
-            ]
-          },
-          {
-            "text": "And wholerow selection"
+        {
+          id: 0,
+          text: "全部文件"
+        }
+      ],
+      loadData: function(oriNode, resolve) {
+        var id = oriNode.data.id ? oriNode.data.id : 0;
+        axion.getDirectory(id).then(d=>{
+          let data = [];
+          for(let i=0;i<d.data.returnData.contents.length;i++){
+            let obj = {};
+            obj.id = d.data.returnData.contents[i].id;
+            if(d.data.returnData.contents[i].id===80){
+              obj.disabled = true;
+              obj.isLeaf = true;
+            }
+            obj.text = d.data.returnData.contents[i].name;
+            data.push(obj);
           }
-        ]
+          resolve(data);
+        })
+      }
     };
   },
 
@@ -87,7 +40,7 @@ export default {
     this.init();
   },
   methods: {
-    init(){},
+    init() {},
     test() {
       axion.validAuth().then(d => {
         if (d.data.returnCode != 200) {
@@ -97,13 +50,12 @@ export default {
         this.$message(d.data.returnData);
       });
     },
-    itemClick (node) {
-          console.log(node.model.text + ' clicked !')
+    itemClick(node, item, e) {
+      console.log(node.model.text+" "+ node.model.id + " clicked !");
     }
   }
 };
 </script>
 
 <style scoped>
-
 </style>

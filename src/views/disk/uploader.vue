@@ -1,143 +1,93 @@
 <template>
   <div>
-    <uploader :options="options" class="uploader-example" ref="uploader">
-      <uploader-unsupport></uploader-unsupport>
-      <!-- <uploader-drop>
-      <p>Drop files here to upload or</p>
-      <uploader-btn>select files</uploader-btn>
-      <uploader-btn :attrs="attrs">select images</uploader-btn>
-      <uploader-btn :directory="true">select folder</uploader-btn>
-      </uploader-drop>-->
-      <uploader-list></uploader-list>
-    </uploader>
     <el-button id="btn" @click="test">qwe</el-button>
-    <el-popover placement="bottom" width="400" trigger="hover">
-      <div class="uploaditem">
-        <i class="fas fa-plus"></i>
-        <span style="margin-left:10px;">文件夹</span>
-      </div>
-      <hr style="border:1 dashed" color="#f0f1f3" size="1">
-      <div class="uploaditem" id="upload-file">
-        <i class="fas fa-file-upload"></i>
-        <span style="margin-left:10px;">上传文件</span>
-      </div>
-      <div class="uploaditem" id="upload-folder">
-        <i class="fas fa-folder-plus"></i>
-        <span style="margin-left:10px;">上传文件夹</span>
-      </div>
-      <el-button type="primary" icon="fas fa-plus-square" slot="reference">新建</el-button>
-    </el-popover>
-    <button @click="clickBT">123</button>
+    <v-jstree :data="data" show-checkbox whole-row @item-click="itemClick"></v-jstree>
   </div>
 </template>
 
 <script>
 import axion from "@/utils/http_url.js"; //接口文件
-import { downloadUrl } from "@/utils/http_url.js"; //接口文件
-import { fileMd5HeadTailTime } from "../../utils/md5.js";
 export default {
   data() {
     return {
-      rootPath: "/",
-      options: {},
-      attrs: {
-        accept: "image/*"
-      }
+      data: [
+          {
+            "text": "Same but with checkboxes",
+            "children": [
+              {
+                "text": "initially selected",
+                "selected": true
+              },
+              {
+                "text": "custom icon",
+                "icon": "fa fa-warning icon-state-danger"
+              },
+              {
+                "text": "initially open",
+                "icon": "fa fa-folder icon-state-default",
+                "opened": true,
+                "children": [
+                  {
+                    "text": "Another node"
+                  }
+                ]
+              },
+              {
+                "text": "custom icon",
+                "icon": "fa fa-warning icon-state-warning"
+              },
+              {
+                "text": "disabled node",
+                "icon": "fa fa-check icon-state-success",
+                "disabled": true
+              }
+            ]
+          },
+          {
+            "text": "Same but with checkboxes",
+            "opened": true,
+            "children": [
+              {
+                "text": "initially selected",
+                "selected": true
+              },
+              {
+                "text": "custom icon",
+                "icon": "fa fa-warning icon-state-danger"
+              },
+              {
+                "text": "initially open",
+                "icon": "fa fa-folder icon-state-default",
+                "opened": true,
+                "children": [
+                  {
+                    "text": "Another node"
+                  }
+                ]
+              },
+              {
+                "text": "custom icon",
+                "icon": "fa fa-warning icon-state-warning"
+              },
+              {
+                "text": "disabled node",
+                "icon": "fa fa-check icon-state-success",
+                "disabled": true
+              }
+            ]
+          },
+          {
+            "text": "And wholerow selection"
+          }
+        ]
     };
   },
-  created() {
-    this.getOption(this);
-  },
+
   mounted() {
     this.init();
   },
-  props: {
-    theme: String
-  },
   methods: {
-    getOption(_this) {
-      _this.options = {
-        // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
-        target: "http://localhost:12315/upload",
-        testChunks: true,
-        chunkSize: 1 * 1024 * 1024,
-        preprocess: _this.preprocess,
-        simultaneousUploads: 1,
-        query: function(file) {
-          return { md5: file.md5 };
-        },
-        headers: {
-          Authorization: localStorage.getItem("token")
-        },
-        checkChunkUploadedByResponse: function(chunk, message) {
-          let objMessage = {};
-          try {
-            objMessage = JSON.parse(message);
-          } catch (e) {}
-          // fake response
-          // objMessage.uploaded_chunks = [2, 3, 4, 5, 6, 8, 10, 11, 12, 13, 17, 20, 21]
-          // check the chunk is uploaded
-          return (
-            (objMessage.returnData.chunks || []).indexOf(chunk.offset + 1) >= 0
-          );
-        }
-      };
-    },
-    init() {
-      let _this = this;
-      let uploaderInstance = this.$refs.uploader.uploader;
-      uploaderInstance.on("fileSuccess", this.saveFileToContent);
-      uploaderInstance.on("fileAdded", function(file, event) {
-        axion.validAuth().then(d => {
-          // if (d.data.returnCode != 200) {
-          //   return false;
-          // }
-          //设置为true，axios拦截器会拦截401
-          return true;
-        });
-      });
-      uploaderInstance.assignBrowse(
-        document.getElementById("upload-file"),
-        false,
-        false,
-        {}
-      );
-    },
-    saveFileToContent(rootFile, file, message, chunk) {
-      if (JSON.parse(message).returnData.success == "true") {
-        let fileId = JSON.parse(message).returnData.fileId;
-        axion
-          .saveFileToContent({
-            fileId: fileId,
-            rootPath: this.rootPath,
-            directoryId: 0,
-            fileName: file.name,
-            totalSize: file.size,
-            directory: file.isFolder,
-            fileType: file.fileType
-          })
-          .then(d => {
-            if (d.data.returnCode != 200) {
-              this.$message(d.data.returnData);
-            }
-            this.$message("success");
-          });
-      }
-    },
-    preprocess(chunk) {
-      let uploaderInstance = this.$refs.uploader.uploader;
-      // 上传或test之前执行,生成md5(如果file存在md5 就不生成了)
-      if (chunk.file.md5 === "" || chunk.file.md5 == null) {
-        fileMd5HeadTailTime(chunk.file, uploaderInstance.opts.chunkSize).then(
-          () => {
-            chunk.preprocessFinished();
-          }
-        );
-      } else {
-        chunk.preprocessFinished();
-      }
-      console.log(chunk.file.md5);
-    },
+    init(){},
     test() {
       axion.validAuth().then(d => {
         if (d.data.returnCode != 200) {
@@ -147,92 +97,13 @@ export default {
         this.$message(d.data.returnData);
       });
     },
-    clickBT() {
-      let url = downloadUrl + "ds=63";
-      let xhr = new XMLHttpRequest();
-      xhr.open("get", url, true);
-      xhr.setRequestHeader("Authorization", localStorage.getItem("token"));
-      xhr.responseType = "blob"; // 返回类型blob  blob 存储着大量的二进制数据
-      xhr.onload = function() {
-        if (this.status === 200) {
-          let blob = this.response;
-          let fileName = xhr
-            .getResponseHeader("Content-Disposition")
-            .substring(9);
-          let link = document.createElement("a");
-          link.href = window.URL.createObjectURL(blob);
-          link.download = fileName;
-          link.target = "_blank";
-          link.click();
-          window.URL.revokeObjectURL(link.href);
-          link.remove();
-        }
-      };
-      xhr.send(); // 发送ajax请求
+    itemClick (node) {
+          console.log(node.model.text + ' clicked !')
     }
   }
 };
 </script>
-<style>
-.el-scrollbar__wrap {
-  overflow-x: hidden;
-}
-.el-dialog__body {
-  padding: 0;
-}
-</style>
 
 <style scoped>
-.uploaditem {
-  cursor: pointer;
-  font-size: 15px;
-  height: 30px;
-  line-height: 30px;
-  padding: 0 20px;
-}
-.uploaditem:hover {
-  background-color: #f0f1f3;
-}
-.uploader-example {
-  width: 880px;
-  padding: 15px;
-  margin: 40px auto 0;
-  font-size: 12px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-}
-.uploader-example .uploader-btn {
-  margin-right: 4px;
-}
-.uploader-example .uploader-list {
-  max-height: 440px;
-  overflow: auto;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-</style>
 
-<style>
-.uploader-file-icon::before {
-  content: url(../../assets/small-file.png) !important;
-  display: block;
-  height: 100%;
-  font-size: 24px;
-  line-height: 1;
-  text-indent: 0;
-}
-.uploader-file-icon[icon="folder"]::before {
-  content: url(../../assets/small-folder.png) !important;
-}
-.uploader-file-icon[icon="image"]::before {
-  content: url(../../assets/small-image.png) !important;
-}
-.uploader-file-icon[icon="video"]::before {
-  content: url(../../assets/small-video.png) !important;
-}
-.uploader-file-icon[icon="audio"]::before {
-  content: url(../../assets/small-music.png) !important;
-}
-.uploader-file-icon[icon="document"]::before {
-  content: url(../../assets/small-document.png) !important;
-}
 </style>

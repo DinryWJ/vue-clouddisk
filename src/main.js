@@ -12,9 +12,7 @@ import 'v-contextmenu/dist/index.css'
 import uploader from 'vue-simple-uploader'
 import Vuex from 'vuex'
 import axios from 'axios'
-import VJstree from 'vue-jstree'
 
-Vue.use(VJstree)
 Vue.use(Vuex)
 Vue.use(contentmenu)
 Vue.use(uploader)

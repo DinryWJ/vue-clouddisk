@@ -69,7 +69,9 @@ const renameFile = (fileId, name) => post('/fileContent/renameFile', fileId, nam
 /*创建文件夹*/
 const newFolder = (parentId, name) => post('/content/newFolder', parentId, name);
 /*下载文件*/
-const downloadUrl = baseURL + "/fileContent/downloadFiles?"
+const downloadUrl = baseURL + "/fileContent/downloadFiles?";
+/*移动文件夹*/
+const move = (filelist,dirlist) => post('/fileContent/',filelist,dirlist);
 
 export {
   downloadUrl
@@ -87,5 +89,6 @@ export default {
   batchDeleteFiles,
   renameDirectory,
   renameFile,
-  newFolder
+  newFolder,
+  move
 }

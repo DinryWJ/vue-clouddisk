@@ -12,7 +12,7 @@
 
         <v-contextmenu-item divider></v-contextmenu-item>
 
-        <v-contextmenu-item @click="handleClick">移动到...</v-contextmenu-item>
+        <v-contextmenu-item @click="dialogVisible = true">移动到...</v-contextmenu-item>
         <v-contextmenu-item @click="handleClick">复制到...</v-contextmenu-item>
 
         <v-contextmenu-item divider></v-contextmenu-item>
@@ -79,6 +79,7 @@
         ref="multipleTable"
         style="width: 100%;font-size:12px;"
         @selection-change="handleSelectionChange"
+        @cell-click="clickTd"
         @row-contextmenu="clickTd"
         @header-contextmenu="clickTh"
       >
@@ -146,6 +147,30 @@
         </div>
       </el-card>
     </div>
+    <el-dialog
+      :title="title"
+      :visible.sync="dialogVisible"
+      width="500px"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-scrollbar style="height:200px;">
+        <v-jstree
+          ref="tree"
+          :data="data"
+          show-checkbox
+          :allow-transition="false"
+          whole-row
+          :async="loadData"
+          @item-click="itemClick"
+        ></v-jstree>
+      </el-scrollbar>
+      <span slot="footer" class="dialog-footer">
+        <el-button id="btn" @click="refresh" icon="el-icon-refresh" style="float:left"></el-button>
+        <el-button @click="dialogVisible = false" style="width:130px">取 消</el-button>
+        <el-button type="primary" @click="handleMoveOrCopy" style="width:130px">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -168,7 +193,11 @@ export default {
       options: {},
       breadList: [],
       tableData: [],
-      multipleSelection: []
+      multipleSelection: [],
+      dialogVisible: false,
+      title: "移动到",
+      data: [],
+      checked: 0
     };
   },
   created() {
@@ -181,6 +210,56 @@ export default {
     theme: String
   },
   methods: {
+    itemClick(node, item, e) {
+      this.checked = node.model.id;
+    },
+    refresh() {
+      this.data = [this.$refs.tree.initializeLoading()];
+      this.$refs.tree.handleAsyncLoad(this.data, this.$refs.tree);
+    },
+    handleMoveOrCopy() {
+      this.dialogVisible = false;
+      const loading = this.$loading({
+          lock: true,
+          text: '准备中',
+          spinner: 'el-icon-loading',
+          background: 'rgba(255, 255, 255, 0.8)'
+        });
+    },
+    loadData(oriNode, resolve) {
+      let arr = [];
+      for (let i = 0; i < this. multipleSelection.length; i++) {
+        if(this. multipleSelection[i].isFolder){
+          arr.push(this. multipleSelection[i].id);
+        }
+      }
+      if (oriNode.data.id == null) {
+        let data = [
+          {
+            id: 0,
+            text: "全部文件"
+          }
+        ];
+        resolve(data);
+        return;
+      }
+      var id = oriNode.data.id;
+      axion.getDirectory(id).then(d => {
+        let data = [];
+        for (let i = 0; i < d.data.returnData.contents.length; i++) {
+          let obj = {};
+          obj.id = d.data.returnData.contents[i].id;
+          if (arr.indexOf(d.data.returnData.contents[i].id) > -1) {
+            obj.disabled = true;
+            obj.isLeaf = true;
+          }
+          obj.text = d.data.returnData.contents[i].name;
+          data.push(obj);
+        }
+        resolve(data);
+        return;
+      });
+    },
     getOption(_this) {
       _this.options = {
         // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
@@ -278,8 +357,8 @@ export default {
         }
       });
     },
-    handleOpen(){
-      if(this.multipleSelection[0].isFolder){
+    handleOpen() {
+      if (this.multipleSelection[0].isFolder) {
         let bread = {};
         bread.id = this.multipleSelection[0].id;
         bread.name = this.multipleSelection[0].name;
@@ -288,7 +367,6 @@ export default {
         this.getContent(this.multipleSelection[0].id);
       }
       //TODO 打开文件
-      
     },
     openFolder(index, val) {
       let bread = {};
@@ -402,7 +480,6 @@ export default {
       console.log(index, row);
     },
     toggleSelection(row) {
-      console.log("toggle");
       let flag = false;
       for (let i = 0; i < this.multipleSelection.length; i++) {
         if (this.multipleSelection[i].id == row["id"]) {
@@ -424,12 +501,9 @@ export default {
       this.show();
     },
     clickTd(row, event) {
-      console.log(row["id"]); //跟下面效果一样
       this.toggleSelection(row);
-      // console.log(row, event); //获取各行id的值
     },
     clickTh(row, event) {
-      // window.event ? (window.event.cancelBubble = true) : e.stopPropagation(); //阻止表头触发右键菜单栏
       this.$refs.multipleTable.clearSelection();
       this.menuType = false;
     },
@@ -443,7 +517,6 @@ export default {
       this.multipleSelection = val;
     },
     show() {
-      console.log("menu show");
       if (this.multipleSelection.length == 0) {
         this.menuType = false;
       } else {
@@ -463,7 +536,7 @@ export default {
       let arr = [];
       for (let i = 0; i < this.multipleSelection.length; i++) {
         let obj = {};
-        if(this.multipleSelection[i].id == -1){
+        if (this.multipleSelection[i].id == -1) {
           this.$message("存在未确认文件");
           return;
         }
@@ -495,7 +568,7 @@ export default {
       let arr = "";
       let flag = true;
       for (let i = 0; i < this.multipleSelection.length; i++) {
-        if(this.multipleSelection[i].id == -1){
+        if (this.multipleSelection[i].id == -1) {
           this.$message("存在未确认文件");
           return;
         }
@@ -519,8 +592,8 @@ export default {
       xhr.responseType = "blob"; // 返回类型blob  blob 存储着大量的二进制数据
       xhr.onload = function() {
         if (this.status === 200) {
-          if(this.response.size == 0 ){
-            _this.$message('无法下载空文件!');
+          if (this.response.size == 0) {
+            _this.$message("无法下载空文件!");
             return;
           }
           let blob = this.response;
@@ -542,7 +615,10 @@ export default {
       this.multipleSelection[0].editFlag = true;
     },
     doRename(index) {
-      if (this.tableData[index].isNew && this.tableData[index].name == this.tableData[index].oldName) {
+      if (
+        this.tableData[index].isNew &&
+        this.tableData[index].name == this.tableData[index].oldName
+      ) {
         this.$message("请输入文件夹名！");
         return;
       }
@@ -560,7 +636,7 @@ export default {
               if (d.data.returnCode != 200) {
                 this.$message(d.data.returnData);
               }
-              if(d.data.returnData==-1){
+              if (d.data.returnData == -1) {
                 this.$message("创建失败请重试！");
                 return;
               }
@@ -633,6 +709,12 @@ export default {
 </style>
 
 <style>
+.el-scrollbar__wrap {
+  overflow-x: hidden;
+}
+.el-dialog__body {
+  padding: 0;
+}
 .cell {
   display: flex !important;
 }

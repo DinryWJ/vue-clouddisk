@@ -70,11 +70,14 @@ const renameFile = (fileId, name) => post('/fileContent/renameFile', fileId, nam
 const newFolder = (parentId, name) => post('/content/newFolder', parentId, name);
 /*下载文件*/
 const downloadUrl = baseURL + "/fileContent/downloadFiles?";
+/*上传文件*/
+const uploadUrl = baseURL + "/upload";
 /*移动文件夹*/
 const move = (filelist,dirlist) => post('/fileContent/',filelist,dirlist);
 
 export {
-  downloadUrl
+  downloadUrl,
+  uploadUrl
 }
 
 export default {

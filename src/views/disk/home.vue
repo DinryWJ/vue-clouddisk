@@ -175,7 +175,7 @@
 </template>
 <script>
 import axion from "@/utils/http_url.js"; //接口文件
-import { downloadUrl } from "@/utils/http_url.js";
+import { downloadUrl,uploadUrl } from "@/utils/http_url.js";
 import "element-ui/lib/theme-chalk/display.css";
 import { fileMd5HeadTailTime } from "../../utils/md5.js";
 export default {
@@ -263,7 +263,7 @@ export default {
     getOption(_this) {
       _this.options = {
         // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
-        target: "http://localhost:12315/upload",
+        target: uploadUrl,
         testChunks: true,
         chunkSize: 64 * 1024 * 1024,
         preprocess: _this.preprocess,
